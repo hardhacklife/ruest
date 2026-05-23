@@ -1,6 +1,9 @@
+//! Shop API — second exemple RustForge (structure README + multi-modules).
+
 mod app_module;
-mod products;
-mod users;
+mod common;
+mod config;
+mod modules;
 
 use rustforge::prelude::*;
 
@@ -9,9 +12,9 @@ use app_module::AppModule;
 #[tokio::main]
 async fn main() -> Result<(), CoreError> {
     rustforge::logger::init();
-    rustforge::bootstrap_app(AppModule)
-        .expect("bootstrap failed")
-        .port(3000)
+
+    bootstrap_app(AppModule)?
+        .port(config::port())
         .listen()
         .await
 }

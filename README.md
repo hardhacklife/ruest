@@ -1,8 +1,14 @@
 # RustForge Framework
 
-**NestJS DX + performance Rust + simplicité Axum** — voir [ARCHITECTURE.md](./ARCHITECTURE.md).
+**NestJS DX + performance Rust + simplicité Axum**
 
-Framework backend Rust inspiré de NestJS et Spring Boot, défini dans [BRD&PRD.md](./BRD&PRD.md).
+Framework backend Rust inspiré de NestJS et Spring Boot — voir [BRD&PRD.md](./BRD&PRD.md).
+
+| Document | Contenu |
+|----------|---------|
+| [ARCHITECTURE.md](./ARCHITECTURE.md) | Performance, routing/DI compile-time |
+| [docs/DX.md](./docs/DX.md) | CLI `forge`, prelude, conventions, roadmap DX |
+| [docs/HTTP_FEATURES.md](./docs/HTTP_FEATURES.md) | Features Axum activées |
 
 ## Capacités HTTP (Axum)
 
@@ -10,44 +16,43 @@ Toutes les features Axum 0.7 sont activées : **HTTP/1**, **HTTP/2**, **WebSocke
 
 ```rust
 use rustforge::prelude::*;
-// Json, Form, Query, Path, Multipart, WebSocketUpgrade, MatchedPath, OriginalUri, ConnectInfo
+// Json, Form, Query, Path, AppResult, Multipart, WebSocketUpgrade, …
 ```
 
-Détail et exemples : [docs/HTTP_FEATURES.md](./docs/HTTP_FEATURES.md).
+## Principes
 
-## Principes performance
+| Axe | Choix |
+|-----|--------|
+| **Performance** | Routes macros → `Router` Axum monomorphisé, DI `get::<T>()` typée, pas de `dyn` par route |
+| **DX** | `prelude` unique, `AppResult<T>`, `forge_err!`, messages DI explicites, CLI `forge` |
+| **Objectif** | Rust backend **agréable** — pas « le plus rapide », mais enterprise + simple |
 
-| Choix | Pourquoi |
-|-------|----------|
-| Routes générées par macros → `Router` Axum | Handlers **monomorphisés**, pas de `dyn` par route |
-| DI `get::<T>()` + `register_singleton` | Résolution **typée**, pas de reflection Spring |
-| `Arc` pour services / contrôleurs | Partage zero-copy, pas de clone profond |
-| Pas de registre runtime lourd | Évite le coût Nest/Spring metadata |
+## Phase 1 (MVP) ✅
 
-**Objectif réaliste :** meilleure DX enterprise Rust, légèrement au-dessus d’Axum pur en coût, bien en-dessous de NestJS en latence.
-
-## Phase 1 (MVP)
-
-- Modules, DI, controllers, routing compile-time, validation, config, logger, CLI
-- Exemple : `examples/basic-api`
+Modules, DI, controllers, routing compile-time, validation, config, logger, CLI `forge`, `AppResult`, exemples `basic-api` et `shop-api`.
 
 ## Démarrage
 
 ```bash
 cargo build
-cargo run -p basic-api
+cargo run -p basic-api    # port 3000 — users + products
+cargo run -p shop-api     # port 3001 — customers + orders (structure README)
 ```
 
-- `GET http://localhost:3000/users/`
-- `POST http://localhost:3000/users/`
-- `GET http://localhost:3000/health`
+| Exemple | Port | Description |
+|---------|------|-------------|
+| [basic-api](examples/basic-api/) | 3000 | API minimale |
+| [shop-api](examples/shop-api/) | 3001 | Boutique : dto, entities, repository, `forge_err!` |
 
-## Exemple
+## Exemple (aligné sur `basic-api`)
 
 ```rust
+use rustforge::prelude::*;
+
 #[service]
-#[derive(Default)]
-pub struct UserService { /* ... */ }
+pub struct UserService { /* … */ }
+
+impl Default for UserService { /* … */ }
 
 #[controller("/users")]
 pub struct UserController {
@@ -57,30 +62,71 @@ pub struct UserController {
 #[routes]
 impl UserController {
     #[get("/")]
-    async fn get_users(&self) -> Json<Vec<User>> { /* ... */ }
+    async fn get_users(&self) -> AppResult<Json<Vec<User>>> {
+        Ok(Json(self.service.find_all().await))
+    }
+
+    #[post("/")]
+    async fn create_user(&self) -> AppResult<Json<User>> {
+        // …
+        Ok(Json(user))
+    }
 }
 
 #[module(controllers = [UserController], providers = [UserService])]
 pub struct UsersModule;
+
+// Module racine (shop-api, basic-api) — pas besoin de relister controllers/services :
+#[module(imports = [UsersModule, ProductsModule])]
+pub struct AppModule;
 ```
 
 ```rust
-rustforge::bootstrap_app(UsersModule)?
-    .port(3000)
-    .listen()
-    .await
+#[tokio::main]
+async fn main() -> Result<(), CoreError> {
+    rustforge::logger::init();
+    rustforge::bootstrap_app(AppModule)?
+        .port(3000)
+        .listen()
+        .await
+}
 ```
 
-## Structure
+Erreurs métier dans les handlers :
+
+```rust
+return Err(forge_err!(Conflict, "Email already exists"));
+```
+
+## Structure du framework
 
 ```text
 rustforge/
-├── core/       # modules, bootstrap DI
-├── di/         # Container typé
-├── macros/     # compile-time routes + providers
-├── http/       # Axum (router assemblé au bootstrap)
-├── router/     # helpers chemins statiques
-├── config/, validation/, logger/, cli/, testing/
+├── core/          # modules, bootstrap
+├── di/            # conteneur typé
+├── macros/        # #[module], #[controller], #[routes], …
+├── http/          # Axum, AppResult
+├── router/        # chemins statiques
+├── validation/    # Validate, ValidatedJson
+├── config/, logger/, cli/, testing/
+└── src/           # bootstrap_app, prelude
+```
+
+## Structure d’une app (générée par `forge new`)
+
+```text
+src/
+├── main.rs
+├── config/
+├── common/
+└── modules/
+    └── users/
+        ├── dto/
+        ├── entities/
+        ├── users.controller.rs
+        ├── users.service.rs
+        ├── users.repository.rs
+        └── users.module.rs
 ```
 
 ## CLI `forge`
@@ -93,14 +139,12 @@ forge start --watch
 forge doctor
 ```
 
-DX complète : [docs/DX.md](./docs/DX.md)
-
 ## Roadmap
 
 | Phase | Contenu |
 |-------|---------|
-| **1** | MVP compile-time routing + DI typée ✅ |
-| **2** | auth, ORM, OpenAPI, WebSocket |
+| **1** | MVP compile-time routing + DI typée + CLI ✅ |
+| **2** | auth, ORM, OpenAPI, extracteurs `#[routes]` avancés |
 | **3** | microservices, queues, cache, observabilité |
 
 ## Licence

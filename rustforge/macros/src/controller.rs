@@ -46,7 +46,7 @@ pub fn expand(attr: TokenStream, item: TokenStream) -> TokenStream {
             }
 
             /// Instancie le contrôleur via DI typée (`get::<T>()` monomorphisé).
-            pub fn create(
+            pub fn from_container(
                 container: &::rustforge::di::Container,
             ) -> Result<Self, ::rustforge::di::DiError> {
                 Ok(Self {

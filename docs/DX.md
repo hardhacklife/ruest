@@ -47,6 +47,20 @@ pub struct UserService { /* ... */ }
 pub struct UsersModule;
 ```
 
+### Module racine (`imports`)
+
+Évite de dupliquer controllers/services dans `app_module.rs` : chaque domaine déclare son `#[module]`, le module racine ne compose que les sous-modules.
+
+```rust
+use crate::modules::users::UsersModule;
+use crate::modules::orders::OrdersModule;
+
+#[module(imports = [UsersModule, OrdersModule])]
+pub struct AppModule;
+```
+
+`imports` enregistre la DI des enfants et monte leurs routes avant les controllers locaux (s’il y en a).
+
 ## CLI `forge`
 
 | Commande | Description |

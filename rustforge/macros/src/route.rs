@@ -100,7 +100,7 @@ pub fn expand_routes_impl(item: TokenStream) -> TokenStream {
                 router: ::rustforge::http::axum::Router,
                 container: &::rustforge::di::Container,
             ) -> Result<::rustforge::http::axum::Router, ::rustforge::di::DiError> {
-                let controller = std::sync::Arc::new(Self::create(container)?);
+                let controller = std::sync::Arc::new(Self::from_container(container)?);
                 Ok(Self::mount(router, controller))
             }
         }

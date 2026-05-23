@@ -69,18 +69,31 @@ pub fn expand(attr: TokenStream, item: TokenStream) -> TokenStream {
         .map(|c| quote! { router = #c::wire(router, container)?; })
         .collect();
 
+    let import_wires: Vec<_> = args
+        .imports
+        .iter()
+        .map(|m| quote! { router = #m::wire_routes(router, container)?; })
+        .collect();
+
+    let import_instances: Vec<_> = args
+        .imports
+        .iter()
+        .map(|m| quote! { Box::new(#m) as Box<dyn ::rustforge::core::Module> })
+        .collect();
+
     let export_names: Vec<_> = args.exports.iter().map(|e| quote! { stringify!(#e) }).collect();
 
     let expanded = quote! {
         #input
 
         impl #module_name {
-            /// Monte tous les contrôleurs du module sur un `Router` Axum (compile-time).
+            /// Monte ce module et ses sous-modules sur le routeur Axum.
             pub fn wire_routes(
                 router: ::rustforge::http::axum::Router,
                 container: &::rustforge::di::Container,
             ) -> Result<::rustforge::http::axum::Router, ::rustforge::di::DiError> {
                 let mut router = router;
+                #(#import_wires)*
                 #(#controller_wires)*
                 Ok(router)
             }
@@ -89,7 +102,7 @@ pub fn expand(attr: TokenStream, item: TokenStream) -> TokenStream {
         impl ::rustforge::core::Module for #module_name {
             fn metadata(&self) -> ::rustforge::core::ModuleMetadata {
                 ::rustforge::core::ModuleMetadata {
-                    imports: vec![],
+                    imports: vec![#(#import_instances),*],
                     providers: vec![#(#provider_registers),*],
                     exports: vec![#(#export_names),*],
                 }
@@ -108,6 +121,5 @@ pub fn expand(attr: TokenStream, item: TokenStream) -> TokenStream {
         }
     };
 
-    let _ = args.imports;
     expanded.into()
 }
