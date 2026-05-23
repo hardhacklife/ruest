@@ -2,6 +2,7 @@
 
 use rustforge_core::{bootstrap, CoreError, Module, RustForgeApplication};
 use rustforge_http::axum::Router;
+use rustforge_security::{apply_jwt_layer, JwtService, SecurityConfig};
 
 /// Application prête à écouter (DI + routeur Axum monomorphisé).
 pub struct AppBuilder {
@@ -49,5 +50,25 @@ impl AppBuilder {
 
     pub fn build(self) -> (RustForgeApplication, Router) {
         (self.app, self.router)
+    }
+
+    /// Active l'authentification JWT (enregistre [`JwtService`] si besoin + middleware).
+    ///
+    /// Enregistrez `JwtService` plus tôt via `JwtService::register_dev_provider` ou
+    /// `register_jwt_provider` dans un `#[module]` si des contrôleurs l'injectent au câblage des routes.
+    pub fn with_jwt_auth(mut self, config: SecurityConfig) -> Result<Self, CoreError> {
+        if self.app.container.get::<JwtService>().is_err() {
+            rustforge_security::register_jwt_provider(&self.app.container, config.clone())
+                .map_err(|e| CoreError::ModuleConfig(e.to_string()))?;
+        }
+
+        let jwt = self
+            .app
+            .container
+            .get::<JwtService>()
+            .map_err(|e| CoreError::ModuleConfig(e.to_string()))?;
+
+        self.router = apply_jwt_layer(self.router, jwt, &config);
+        Ok(self)
     }
 }

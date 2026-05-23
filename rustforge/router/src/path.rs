@@ -34,3 +34,32 @@ macro_rules! static_path {
         PATH
     }};
 }
+
+#[cfg(test)]
+mod tests {
+    use super::join_paths;
+
+    #[test]
+    fn joins_prefix_and_suffix() {
+        let path = join_paths("/api", "/users");
+        assert_eq!(path, "/api/users");
+    }
+
+    #[test]
+    fn trims_trailing_slash_on_prefix_when_suffix_is_absolute() {
+        let path = join_paths("/api/", "/health");
+        assert_eq!(path, "/api/health");
+    }
+
+    #[test]
+    fn root_suffix_on_prefix() {
+        let path = join_paths("/ping", "/");
+        assert_eq!(path, "/ping/");
+    }
+
+    #[test]
+    fn empty_prefix_uses_suffix() {
+        let path = join_paths("", "/only");
+        assert_eq!(path, "/only");
+    }
+}

@@ -1,6 +1,7 @@
 //! Procedural macros for RustForge.
 
 mod controller;
+mod guard;
 mod module;
 mod route;
 mod service;
@@ -73,8 +74,13 @@ pub fn dto(_attr: TokenStream, item: TokenStream) -> TokenStream {
     item
 }
 
-/// Marks a guard (MVP: passthrough).
+/// Déclare une garde d'autorisation (`impl Guard`).
+///
+/// ```ignore
+/// #[guard(roles = ["admin"])]
+/// pub struct AdminGuard;
+/// ```
 #[proc_macro_attribute]
-pub fn guard(_attr: TokenStream, item: TokenStream) -> TokenStream {
-    item
+pub fn guard(attr: TokenStream, item: TokenStream) -> TokenStream {
+    guard::expand(attr, item)
 }

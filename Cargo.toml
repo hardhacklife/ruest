@@ -10,6 +10,7 @@ members = [
     "rustforge/validation",
     "rustforge/logger",
     "rustforge/testing",
+    "rustforge/security",
     "rustforge/cli",
     "rustforge",
     "examples/basic-api",
@@ -76,3 +77,6 @@ rustforge-config = { path = "rustforge/config" }
 rustforge-validation = { path = "rustforge/validation" }
 rustforge-logger = { path = "rustforge/logger" }
 rustforge-testing = { path = "rustforge/testing" }
+rustforge-security = { path = "rustforge/security" }
+jsonwebtoken = "9"
+chrono = { version = "0.4", features = ["serde"] }

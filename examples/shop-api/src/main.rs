@@ -13,7 +13,10 @@ use app_module::AppModule;
 async fn main() -> Result<(), CoreError> {
     rustforge::logger::init();
 
+    let security = SecurityConfig::dev();
+
     bootstrap_app(AppModule)?
+        .with_jwt_auth(security)?
         .port(config::port())
         .listen()
         .await

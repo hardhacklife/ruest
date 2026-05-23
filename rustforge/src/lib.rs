@@ -30,6 +30,11 @@ pub mod logger {
 pub mod testing {
     pub use rustforge_testing::*;
 }
+pub mod security {
+    pub use rustforge_security::*;
+}
+
+pub use async_trait;
 
 pub use bootstrap::{bootstrap_app, AppBuilder, ModuleWireRoutes};
 pub use rustforge_macros::{
@@ -61,16 +66,27 @@ macro_rules! forge_err {
     (Internal, $msg:expr) => {
         $crate::AppError::internal($msg)
     };
+    (Unauthorized, $msg:expr) => {
+        $crate::AppError::unauthorized($msg)
+    };
+    (Forbidden, $msg:expr) => {
+        $crate::AppError::forbidden($msg)
+    };
 }
 
 /// Prelude for application code.
 pub mod prelude {
     pub use crate::{
-        bootstrap_app, controller, delete, get, module, patch, post, put, routes, service,
-        forge_err, AppBuilder, AppError, AppResult, Body, Bytes, ConnectInfo, CoreError, Form,
-        HttpModule, Inject, Json, MatchedPath, Module, ModuleWireRoutes, Multipart,
-        OriginalUri, Path, Query, RustForgeApplication, State, Validate, ValidatedJson,
+        bootstrap_app, controller, delete, get, guard, module, patch, post, put, routes, service,
+        async_trait, forge_err, AppBuilder, AppError, AppResult, Body, Bytes, ConnectInfo,
+        CoreError, Form, HttpModule, Inject, Json, MatchedPath, Module, ModuleWireRoutes,
+        Multipart, OriginalUri, Path, Query, RustForgeApplication, State, Validate, ValidatedJson,
         WebSocket, WebSocketMessage, WebSocketUpgrade, logger,
+    };
+    pub use crate::security::{
+        apply_jwt_layer, register_jwt_provider, AuthContext, AuthUser, ForgeClaims, Guard,
+        JwtDevProvider, JwtGuard, JwtService, RolesGuard, SecurityConfig, SecurityConfigBuilder,
+        SecurityError,
     };
 }
 

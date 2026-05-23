@@ -35,6 +35,14 @@ impl AppError {
         Self::Internal(msg.into())
     }
 
+    pub fn unauthorized(msg: impl Into<String>) -> Self {
+        Self::Unauthorized(msg.into())
+    }
+
+    pub fn forbidden(msg: impl Into<String>) -> Self {
+        Self::Forbidden(msg.into())
+    }
+
     pub fn status(&self) -> StatusCode {
         match self {
             AppError::BadRequest(_) => StatusCode::BAD_REQUEST,
@@ -84,5 +92,32 @@ impl IntoResponse for AppError {
             message,
         };
         (status, axum::Json(body)).into_response()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use axum::http::StatusCode;
+
+    #[test]
+    fn status_codes_match_http_semantics() {
+        assert_eq!(
+            AppError::bad_request("x").status(),
+            StatusCode::BAD_REQUEST
+        );
+        assert_eq!(AppError::not_found("x").status(), StatusCode::NOT_FOUND);
+        assert_eq!(AppError::conflict("x").status(), StatusCode::CONFLICT);
+        assert_eq!(
+            AppError::internal("x").status(),
+            StatusCode::INTERNAL_SERVER_ERROR
+        );
+    }
+
+    #[test]
+    fn display_is_human_readable() {
+        let msg = AppError::not_found("missing").to_string();
+        assert!(msg.contains("Not Found"));
+        assert!(msg.contains("missing"));
     }
 }

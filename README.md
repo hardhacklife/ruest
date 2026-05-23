@@ -98,6 +98,18 @@ Erreurs métier dans les handlers :
 return Err(forge_err!(Conflict, "Email already exists"));
 ```
 
+### Sécurité JWT
+
+```rust
+bootstrap_app(AppModule)?
+    .with_jwt_auth(SecurityConfig::dev())?  // ou SecurityConfig::from_env()?
+    .port(3000)
+    .listen()
+    .await?;
+```
+
+Voir [docs/SECURITY.md](docs/SECURITY.md) — guards `#[guard(roles = ["admin"])]`, extracteur `AuthUser`, routes publiques `/auth/login`, etc.
+
 ## Structure du framework
 
 ```text
@@ -144,7 +156,7 @@ forge doctor
 | Phase | Contenu |
 |-------|---------|
 | **1** | MVP compile-time routing + DI typée + CLI ✅ |
-| **2** | auth, ORM, OpenAPI, extracteurs `#[routes]` avancés |
+| **2** | JWT/guards ✅, ORM, OpenAPI, extracteurs `#[routes]` avancés |
 | **3** | microservices, queues, cache, observabilité |
 
 ## Licence

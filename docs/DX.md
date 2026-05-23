@@ -137,7 +137,8 @@ pub struct CreateUserDto {
 | P0 | DI erreurs humaines | ✅ |
 | P1 | Extracteurs dans `#[routes]` (body, ValidatedJson) | 🔜 |
 | P1 | OpenAPI / Swagger auto (utoipa) | 🔜 |
-| P1 | `forge add postgres/jwt/redis` | 🔜 |
+| P1 | JWT / guards / `with_jwt_auth` | ✅ voir [SECURITY.md](SECURITY.md) |
+| P1 | `forge add postgres/redis` | 🔜 |
 | P2 | `forge studio` (routes, providers, logs) | 🔜 |
 | P2 | `forge explain error` (AI) | 🔜 |
 | P3 | Playground cloud | 🔜 |
