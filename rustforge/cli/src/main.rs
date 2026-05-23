@@ -1,3 +1,4 @@
+mod db;
 mod generate;
 mod new;
 mod templates;
@@ -7,6 +8,7 @@ use std::process::Command;
 
 use anyhow::{bail, Context, Result};
 use clap::{Parser, Subcommand};
+use db::{cmd_db, cmd_generate as cmd_forgedb_generate, DbCommands, MigrateAction};
 use generate::{GenerateTarget, cmd_generate};
 use new::{cmd_new, detect_rustforge_path};
 
@@ -37,8 +39,19 @@ enum Commands {
     #[command(alias = "g")]
     Generate {
         #[command(subcommand)]
-        target: GenerateTargetCli,
+        target: Option<GenerateTargetCli>,
     },
+    /// ForgeDB — schema, client, migrations (Prisma-like)
+    #[command(subcommand)]
+    Db(DbCommands),
+    /// Migrations ForgeDB (`forge migrate dev`)
+    Migrate {
+        #[command(subcommand)]
+        action: MigrateAction,
+    },
+    /// Génère le client ForgeDB depuis `schema.forge`
+    #[command(name = "generate-client")]
+    GenerateClient,
     /// Build the project (incremental dev profile)
     Build,
     /// Run the application
@@ -81,7 +94,13 @@ fn main() -> Result<()> {
             template,
             rustforge_path,
         } => cmd_new(&name, template.as_deref(), &rustforge_path),
-        Commands::Generate { target } => cmd_generate(target.into()),
+        Commands::Generate { target } => match target {
+            Some(t) => cmd_generate(t.into()),
+            None => cmd_forgedb_generate(),
+        },
+        Commands::Db(command) => cmd_db(command),
+        Commands::Migrate { action } => cmd_db(DbCommands::Migrate { action }),
+        Commands::GenerateClient => cmd_forgedb_generate(),
         Commands::Build => run_cargo(&["build"]),
         Commands::Start { watch } => cmd_start(watch),
         Commands::Test => run_cargo(&["test"]),
@@ -120,6 +139,7 @@ fn cmd_doctor() -> Result<()> {
     println!("  forge g resource users   — full CRUD scaffold");
     println!("  forge start --watch      — hot reload");
     println!("  use rustforge::prelude::*; — single import");
+    db::doctor_db_hints();
     Ok(())
 }
 

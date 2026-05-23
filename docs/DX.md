@@ -138,7 +138,8 @@ pub struct CreateUserDto {
 | P1 | Extracteurs dans `#[routes]` (body, ValidatedJson) | 🔜 |
 | P1 | OpenAPI / Swagger auto (utoipa) | 🔜 |
 | P1 | JWT / guards / `with_jwt_auth` | ✅ voir [SECURITY.md](SECURITY.md) |
-| P1 | `forge add postgres/redis` | 🔜 |
+| P1 | ForgeDB (schema.forge, migrations, client) | ✅ voir [FORGEDB.md](FORGEDB.md) |
+| P1 | `forge add redis` | 🔜 |
 | P2 | `forge studio` (routes, providers, logs) | 🔜 |
 | P2 | `forge explain error` (AI) | 🔜 |
 | P3 | Playground cloud | 🔜 |

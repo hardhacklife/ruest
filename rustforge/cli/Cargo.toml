@@ -16,3 +16,5 @@ path = "src/main.rs"
 [dependencies]
 clap.workspace = true
 anyhow.workspace = true
+tokio.workspace = true
+forgedb-migrate = { path = "../../forge-db/migrate" }

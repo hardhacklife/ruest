@@ -13,8 +13,14 @@ members = [
     "rustforge/security",
     "rustforge/cli",
     "rustforge",
+    "forge-db/schema",
+    "forge-db/parser",
+    "forge-db/codegen",
+    "forge-db/runtime",
+    "forge-db/migrate",
     "examples/basic-api",
     "examples/shop-api",
+    "examples/forgedb-demo",
 ]
 
 [workspace.package]
@@ -80,3 +86,10 @@ rustforge-testing = { path = "rustforge/testing" }
 rustforge-security = { path = "rustforge/security" }
 jsonwebtoken = "9"
 chrono = { version = "0.4", features = ["serde"] }
+sqlx = { version = "0.8", features = ["runtime-tokio", "postgres", "chrono", "uuid"] }
+
+forgedb-schema = { path = "forge-db/schema" }
+forgedb-parser = { path = "forge-db/parser" }
+forgedb-codegen = { path = "forge-db/codegen" }
+forgedb-runtime = { path = "forge-db/runtime" }
+forgedb-migrate = { path = "forge-db/migrate" }

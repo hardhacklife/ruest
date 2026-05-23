@@ -156,7 +156,7 @@ forge doctor
 | Phase | Contenu |
 |-------|---------|
 | **1** | MVP compile-time routing + DI typée + CLI ✅ |
-| **2** | JWT/guards ✅, ORM, OpenAPI, extracteurs `#[routes]` avancés |
+| **2** | JWT/guards ✅, ForgeDB (Prisma-like) ✅, OpenAPI, extracteurs `#[routes]` |
 | **3** | microservices, queues, cache, observabilité |
 
 ## Licence

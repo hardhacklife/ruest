@@ -1,0 +1,10 @@
+[package]
+name = "forgedb-parser"
+description = "ForgeDB — parser du schema DSL"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+forgedb-schema.workspace = true
+thiserror.workspace = true

@@ -38,6 +38,8 @@ const EXPECTED_CRATES: &[&str] = &[
     "cli",
 ];
 
+const FORGEDB_CRATES: &[&str] = &["schema", "parser", "codegen", "runtime", "migrate"];
+
 /// Points d'entrée publics par crate (API stable / macros).
 const KEY_FILES: &[(&str, &str)] = &[
     ("core", "src/module.rs"),
@@ -88,12 +90,23 @@ fn key_source_files_exist() {
 }
 
 #[test]
+fn forgedb_crates_exist() {
+    let root = workspace_root();
+    for name in FORGEDB_CRATES {
+        let dir = root.join("forge-db").join(name);
+        assert_dir_exists(&dir);
+        assert_file_exists(dir.join("Cargo.toml"));
+    }
+}
+
+#[test]
 fn examples_exist() {
     let root = workspace_root();
     assert_dir_exists(root.join("examples/basic-api"));
     assert_dir_exists(root.join("examples/shop-api"));
     assert_file_exists(root.join("examples/basic-api/src/app_module.rs"));
     assert_file_exists(root.join("examples/shop-api/src/app_module.rs"));
+    assert_file_exists(root.join("examples/forgedb-demo/schema.forge"));
 }
 
 #[test]
