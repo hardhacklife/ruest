@@ -1,0 +1,13 @@
+[package]
+name = "rustforge-config"
+description = "Configuration system for RustForge"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+config.workspace = true
+dotenvy.workspace = true
+serde.workspace = true
+thiserror.workspace = true
+tracing.workspace = true

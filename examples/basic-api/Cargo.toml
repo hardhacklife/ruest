@@ -1,0 +1,13 @@
+[package]
+name = "basic-api"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+rustforge.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tokio.workspace = true
+validator.workspace = true
+uuid.workspace = true

@@ -1,0 +1,14 @@
+[package]
+name = "rustforge-cli"
+description = "CLI for RustForge framework"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "rustforge"
+path = "src/main.rs"
+
+[dependencies]
+clap.workspace = true
+anyhow.workspace = true

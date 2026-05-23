@@ -1,0 +1,13 @@
+[package]
+name = "rustforge-router"
+description = "HTTP routing layer for RustForge"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+async-trait.workspace = true
+axum.workspace = true
+http.workspace = true
+thiserror.workspace = true
+tracing.workspace = true

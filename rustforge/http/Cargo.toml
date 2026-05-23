@@ -1,0 +1,29 @@
+[package]
+name = "rustforge-http"
+description = "HTTP server layer (Axum) for RustForge"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[features]
+# Par défaut : même ensemble que le workspace (toutes les features Axum).
+default = ["full"]
+full = []
+
+[dependencies]
+async-trait.workspace = true
+axum.workspace = true
+bytes.workspace = true
+http.workspace = true
+http-body-util.workspace = true
+hyper.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+tower.workspace = true
+tower-http.workspace = true
+tracing.workspace = true
+rustforge-core.workspace = true
+rustforge-di.workspace = true
+rustforge-router.workspace = true

@@ -13,6 +13,8 @@ use rustforge::prelude::*;
 // Json, Form, Query, Path, Multipart, WebSocketUpgrade, MatchedPath, OriginalUri, ConnectInfo
 ```
 
+Détail et exemples : [docs/HTTP_FEATURES.md](./docs/HTTP_FEATURES.md).
+
 ## Principes performance
 
 | Choix | Pourquoi |
