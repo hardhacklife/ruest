@@ -11,16 +11,16 @@ pub struct UserController {
 #[routes]
 impl UserController {
     #[get("/")]
-    async fn get_users(&self) -> Json<Vec<User>> {
-        Json(self.service.find_all().await)
+    async fn get_users(&self) -> AppResult<Json<Vec<User>>> {
+        Ok(Json(self.service.find_all().await))
     }
 
     #[post("/")]
-    async fn create_user(&self) -> Json<User> {
+    async fn create_user(&self) -> AppResult<Json<User>> {
         let dto = CreateUserDto {
             email: "new@rustforge.dev".into(),
             name: "New User".into(),
         };
-        Json(self.service.create(dto).await)
+        Ok(Json(self.service.create(dto).await))
     }
 }

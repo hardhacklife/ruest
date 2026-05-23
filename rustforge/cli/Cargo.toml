@@ -1,9 +1,13 @@
 [package]
 name = "rustforge-cli"
-description = "CLI for RustForge framework"
+description = "CLI for RustForge framework (command: forge)"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
+
+[[bin]]
+name = "forge"
+path = "src/main.rs"
 
 [[bin]]
 name = "rustforge"

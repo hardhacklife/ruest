@@ -82,3 +82,7 @@ Les macros `#[controller]`, `#[routes]`, `#[get]` / `#[post]` génèrent :
 - `rustforge/di/container.rs` — résolution typée `get::<T>()`
 - `rustforge/http/server.rs` — assemblage `Router` Axum
 - `rustforge/src/bootstrap.rs` — bootstrap HTTP sans registre dynamique
+
+## Developer Experience
+
+Voir [docs/DX.md](./docs/DX.md) — CLI `forge`, prelude, `AppResult`, génération de ressources, conventions projet.

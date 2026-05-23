@@ -44,15 +44,33 @@ pub use rustforge_http::{
 };
 pub use rustforge_http::{ws, Message as WebSocketMessage};
 pub use rustforge_validation::{Validate, ValidatedJson};
+pub use rustforge_http::{AppError, AppResult};
+
+/// Erreur HTTP lisible : `return Err(forge_err!(BadRequest, "message"));`
+#[macro_export]
+macro_rules! forge_err {
+    (BadRequest, $msg:expr) => {
+        $crate::AppError::bad_request($msg)
+    };
+    (NotFound, $msg:expr) => {
+        $crate::AppError::not_found($msg)
+    };
+    (Conflict, $msg:expr) => {
+        $crate::AppError::conflict($msg)
+    };
+    (Internal, $msg:expr) => {
+        $crate::AppError::internal($msg)
+    };
+}
 
 /// Prelude for application code.
 pub mod prelude {
     pub use crate::{
         bootstrap_app, controller, delete, get, module, patch, post, put, routes, service,
-        AppBuilder, Body, Bytes, ConnectInfo, CoreError, Form, HttpModule, Inject, Json,
-        MatchedPath, Module, ModuleWireRoutes, Multipart, OriginalUri, Path, Query,
-        RustForgeApplication, State, Validate, ValidatedJson, WebSocket, WebSocketMessage,
-        WebSocketUpgrade,
+        forge_err, AppBuilder, AppError, AppResult, Body, Bytes, ConnectInfo, CoreError, Form,
+        HttpModule, Inject, Json, MatchedPath, Module, ModuleWireRoutes, Multipart,
+        OriginalUri, Path, Query, RustForgeApplication, State, Validate, ValidatedJson,
+        WebSocket, WebSocketMessage, WebSocketUpgrade, logger,
     };
 }
 

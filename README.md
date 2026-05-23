@@ -83,12 +83,17 @@ rustforge/
 ├── config/, validation/, logger/, cli/, testing/
 ```
 
-## CLI
+## CLI `forge`
 
 ```bash
-cargo run -p rustforge-cli -- new my-app
-cargo run -p rustforge-cli -- generate resource users
+cargo install --path rustforge/cli   # binaires forge + rustforge
+forge new my-api
+forge g resource users
+forge start --watch
+forge doctor
 ```
+
+DX complète : [docs/DX.md](./docs/DX.md)
 
 ## Roadmap
 

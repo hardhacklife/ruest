@@ -63,7 +63,7 @@ impl Container {
             .expect("lock")
             .get(&type_id)
             .cloned()
-            .ok_or(DiError::NotFound(std::any::type_name::<T>()))?;
+            .ok_or(DiError::not_found::<T>())?;
 
         self.guard_circular(type_id)?;
 
@@ -103,7 +103,7 @@ impl Container {
             .expect("lock")
             .get(&type_id)
             .cloned()
-            .ok_or(DiError::NotFound(std::any::type_name::<T>()))?;
+            .ok_or(DiError::not_found::<T>())?;
 
         self.guard_circular(type_id)?;
 
@@ -113,7 +113,10 @@ impl Container {
             sync
         } else {
             self.resolving.write().expect("lock").pop();
-            return Err(DiError::ResolutionFailed(descriptor.type_name.to_string()));
+            return Err(DiError::ResolutionFailed {
+                type_name: descriptor.type_name,
+                reason: "async factory required".into(),
+            });
         };
 
         self.resolving.write().expect("lock").pop();
@@ -153,9 +156,10 @@ impl Container {
         if let Some(instance) = descriptor.factory.create_sync(self) {
             return Ok(instance);
         }
-        Err(DiError::ResolutionFailed(
-            "sync factory required; use get_async for async providers".into(),
-        ))
+        Err(DiError::ResolutionFailed {
+            type_name: descriptor.type_name,
+            reason: "sync factory required; use get_async for async providers".into(),
+        })
     }
 }
 
@@ -186,5 +190,8 @@ fn downcast_arc<T: Send + Sync + 'static>(
     value: Arc<dyn Any + Send + Sync>,
 ) -> Result<Arc<T>, DiError> {
     Arc::downcast::<T>(value)
-        .map_err(|_| DiError::ResolutionFailed(std::any::type_name::<T>().into()))
+        .map_err(|_| DiError::ResolutionFailed {
+            type_name: std::any::type_name::<T>(),
+            reason: "type mismatch in DI container".into(),
+        })
 }

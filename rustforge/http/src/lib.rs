@@ -11,6 +11,7 @@ mod error;
 mod extract;
 mod middleware;
 mod response;
+mod result;
 mod server;
 
 pub use error::HttpError;
@@ -23,4 +24,5 @@ pub use extract::{
 pub use axum::http::Request;
 pub use middleware::{Middleware, Next};
 pub use response::ApiResponse;
+pub use result::{AppError, AppResult};
 pub use server::serve;
