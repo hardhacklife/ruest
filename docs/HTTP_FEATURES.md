@@ -1,6 +1,6 @@
-# Features HTTP Axum (RustForge)
+# Features HTTP Axum (RUEST)
 
-RustForge active **toutes** les features optionnelles d’Axum 0.7 au niveau du workspace. Les applications qui dépendent de `rustforge` héritent de ces capacités sans reconfigurer `axum`.
+RUEST active **toutes** les features optionnelles d’Axum 0.7 au niveau du workspace. Les applications qui dépendent de `ruest` héritent de ces capacités sans reconfigurer `axum`.
 
 ## Features activées
 
@@ -23,9 +23,9 @@ RustForge active **toutes** les features optionnelles d’Axum 0.7 au niveau du 
 ## Import
 
 ```rust
-use rustforge::prelude::*;
+use ruest::prelude::*;
 // ou
-use rustforge::http::{Json, Form, Query, Path, Multipart, WebSocketUpgrade, MatchedPath, OriginalUri};
+use ruest::http::{Json, Form, Query, Path, Multipart, WebSocketUpgrade, MatchedPath, OriginalUri};
 ```
 
 ## Exemples
@@ -67,7 +67,7 @@ async fn handle_socket(mut socket: WebSocket) {
 
 ### ConnectInfo (IP client)
 
-Utiliser `axum::serve` avec `into_make_service_with_connect_info::<SocketAddr>()` — voir la doc Axum ; RustForge expose le type via `ConnectInfo`.
+Utiliser `axum::serve` avec `into_make_service_with_connect_info::<SocketAddr>()` — voir la doc Axum ; RUEST expose le type via `ConnectInfo`.
 
 ## Hyper
 

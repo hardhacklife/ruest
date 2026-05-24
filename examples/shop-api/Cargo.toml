@@ -3,10 +3,10 @@ name = "shop-api"
 version = "0.1.0"
 edition = "2021"
 publish = false
-description = "Exemple RustForge — boutique (customers + orders), structure README complète"
+description = "Exemple RUEST — boutique (customers + orders), structure README complète"
 
 [dependencies]
-rustforge.workspace = true
+ruest.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 tokio.workspace = true

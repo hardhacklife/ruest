@@ -1,4 +1,4 @@
-use rustforge::prelude::*;
+use ruest::prelude::*;
 
 use crate::modules::customers::customers_repository::DEMO_CUSTOMER_ID;
 use crate::modules::customers::CustomerService;
@@ -25,16 +25,16 @@ impl OrderController {
         // En production : ValidatedJson<CreateOrderDto> (extracteurs Phase 2)
         let dto = CreateOrderDto {
             customer_id: DEMO_CUSTOMER_ID,
-            product_name: "RustForge Hoodie".into(),
+            product_name: "RUEST Hoodie".into(),
             amount: 49.90,
         };
 
         if dto.validate().is_err() {
-            return Err(forge_err!(BadRequest, "Invalid order data"));
+            return Err(ruest_err!(BadRequest, "Invalid order data"));
         }
 
         if self.customers.find_by_id(dto.customer_id).await.is_none() {
-            return Err(forge_err!(
+            return Err(ruest_err!(
                 BadRequest,
                 "Customer not found — create a customer first (POST /customers/)"
             ));

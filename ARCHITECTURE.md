@@ -1,4 +1,4 @@
-# Architecture RustForge
+# Architecture RUEST
 
 ## Philosophie
 
@@ -6,9 +6,15 @@
 
 | Priorité | Choix |
 |----------|--------|
+| **Modulaire** | Crates séparés + `#[module(imports)]` |
+| **Typé** | DI `get::<T>()`, macros routes, `AppResult` |
+| **Sécurisé** | JWT, guards, validation, SQL paramétré (RuestDB) |
+| **Fonctionnel** | Chaque brique testée (voir `ruest/tests/principles.rs`) |
 | DX enterprise | Modules, attributs, DI, conventions |
 | Performance | Routing et résolution DI au **compile-time** autant que possible |
 | Simplicité runtime | Axum/Tower natifs, pas de métadonnées runtime lourdes |
+
+Voir [docs/PRINCIPES.md](./docs/PRINCIPES.md) pour le détail de chaque pilier.
 
 Nous ne visons pas « le framework Rust le plus rapide » (Actix/Axum purs le sont déjà). Nous visons **le meilleur équilibre DX enterprise / coût runtime**.
 
@@ -22,13 +28,16 @@ Nous ne visons pas « le framework Rust le plus rapide » (Actix/Axum purs le so
 
 ### Features Axum (activées par défaut)
 
-RustForge active **toutes** les features optionnelles d'Axum 0.7 :
+RUEST active **toutes** les features optionnelles d'Axum 0.7 :
 
 `http1`, `http2`, `json`, `macros`, `matched-path`, `multipart`, `original-uri`, `tokio`, `tower-log`, `tracing`, `ws`, `form`, `query`.
 
-Extracteurs disponibles via `rustforge::prelude` / `rustforge::http` : `Json`, `Form`, `Query`, `Path`, `Multipart`, `MatchedPath`, `OriginalUri`, `WebSocketUpgrade`, `ConnectInfo`, etc.
+Extracteurs disponibles via `ruest::prelude` / `ruest::http` : `Json`, `Form`, `Query`, `Path`, `Multipart`, `MatchedPath`, `OriginalUri`, `WebSocketUpgrade`, `ConnectInfo`, etc.
+
 | DI | `Container` typé + macros | Enregistrement statique, `get::<T>()` monomorphisé |
 | Validation | Serde + validator | DTOs |
+| Sécurité | `ruest-security` | JWT, guards, middleware |
+| Données | `ruest-db/*` | Schema DSL, migrations, client typé |
 | Middleware | Tower | Pipeline HTTP |
 | Sérialisation | Serde / `Json` | JSON |
 
@@ -78,11 +87,11 @@ Les macros `#[controller]`, `#[routes]`, `#[get]` / `#[post]` génèrent :
 
 ## Fichiers clés
 
-- `rustforge/macros/` — génération compile-time routes + DI
-- `rustforge/di/container.rs` — résolution typée `get::<T>()`
-- `rustforge/http/server.rs` — assemblage `Router` Axum
-- `rustforge/src/bootstrap.rs` — bootstrap HTTP sans registre dynamique
+- `ruest/macros/` — génération compile-time routes + DI
+- `ruest/di/container.rs` — résolution typée `get::<T>()`
+- `ruest/http/server.rs` — assemblage `Router` Axum
+- `ruest/src/bootstrap.rs` — bootstrap HTTP sans registre dynamique
 
 ## Developer Experience
 
-Voir [docs/DX.md](./docs/DX.md) — CLI `forge`, prelude, `AppResult`, génération de ressources, conventions projet.
+Voir [docs/DX.md](./docs/DX.md) — CLI `ruest`, prelude, `AppResult`, génération de ressources, conventions projet.

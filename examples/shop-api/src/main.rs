@@ -1,17 +1,17 @@
-//! Shop API — second exemple RustForge (structure README + multi-modules).
+//! Shop API — second exemple RUEST (structure README + multi-modules).
 
 mod app_module;
 mod common;
 mod config;
 mod modules;
 
-use rustforge::prelude::*;
+use ruest::prelude::*;
 
 use app_module::AppModule;
 
 #[tokio::main]
 async fn main() -> Result<(), CoreError> {
-    rustforge::logger::init();
+    ruest::logger::init();
 
     let security = SecurityConfig::dev();
 

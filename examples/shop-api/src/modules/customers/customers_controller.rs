@@ -1,4 +1,4 @@
-use rustforge::prelude::*;
+use ruest::prelude::*;
 
 use super::customers_service::CustomerService;
 use super::dto::CreateCustomerDto;
@@ -24,11 +24,11 @@ impl CustomerController {
         };
 
         if !dto.validate().is_ok() {
-            return Err(forge_err!(BadRequest, "Invalid customer data"));
+            return Err(ruest_err!(BadRequest, "Invalid customer data"));
         }
 
         if self.service.email_exists(&dto.email).await {
-            return Err(forge_err!(Conflict, "Email already exists"));
+            return Err(ruest_err!(Conflict, "Email already exists"));
         }
 
         Ok(Json(self.service.create(dto).await))

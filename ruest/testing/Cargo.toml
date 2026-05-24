@@ -1,0 +1,19 @@
+[package]
+name = "ruest-testing"
+description = "Testing utilities for RUEST"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+readme.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+async-trait.workspace = true
+tokio.workspace = true
+ruest-core.workspace = true
+ruest-http.workspace = true
+ruest-di.workspace = true

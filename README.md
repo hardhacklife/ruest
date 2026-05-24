@@ -1,37 +1,59 @@
-# RustForge Framework
+# RUEST
 
-**NestJS DX + performance Rust + simplicité Axum**
+**Rust + NestJS** — NestJS DX, performance Rust, simplicité Axum.
 
 Framework backend Rust inspiré de NestJS et Spring Boot — voir [BRD&PRD.md](./BRD&PRD.md).
 
 | Document | Contenu |
 |----------|---------|
+| [docs/PRINCIPES.md](./docs/PRINCIPES.md) | **Modulaire · typé · sécurisé · fonctionnel** (piliers du framework) |
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | Performance, routing/DI compile-time |
-| [docs/DX.md](./docs/DX.md) | CLI `forge`, prelude, conventions, roadmap DX |
+| [docs/DX.md](./docs/DX.md) | CLI `ruest`, prelude, conventions, roadmap DX |
+| [docs/SECURITY.md](./docs/SECURITY.md) | JWT, guards, `with_jwt_auth` |
+| [docs/RUESTDB.md](./docs/RUESTDB.md) | Schema DSL, migrations, client généré |
 | [docs/HTTP_FEATURES.md](./docs/HTTP_FEATURES.md) | Features Axum activées |
+| [docs/PERFORMANCE.md](./docs/PERFORMANCE.md) | Benchmarks, wrk, comparaison Axum/NestJS |
 
 ## Capacités HTTP (Axum)
 
 Toutes les features Axum 0.7 sont activées : **HTTP/1**, **HTTP/2**, **WebSocket**, **multipart**, **form**, **query**, `MatchedPath`, `OriginalUri`, tracing des extracteurs, etc.
 
 ```rust
-use rustforge::prelude::*;
+use ruest::prelude::*;
 // Json, Form, Query, Path, AppResult, Multipart, WebSocketUpgrade, …
 ```
 
-## Principes
+## Piliers du framework
 
-| Axe | Choix |
-|-----|--------|
-| **Performance** | Routes macros → `Router` Axum monomorphisé, DI `get::<T>()` typée, pas de `dyn` par route |
-| **DX** | `prelude` unique, `AppResult<T>`, `forge_err!`, messages DI explicites, CLI `forge` |
-| **Objectif** | Rust backend **agréable** — pas « le plus rapide », mais enterprise + simple |
+| Pilier | En bref | Doc |
+|--------|---------|-----|
+| **Modulaire** | `#[module]` + `imports`, un crate par responsabilité | [PRINCIPES.md](./docs/PRINCIPES.md#1-modulaire) |
+| **Typé** | `Inject<T>`, `AppResult`, macros compile-time, RuestDB généré | [PRINCIPES.md](./docs/PRINCIPES.md#2-typé-type-safe) |
+| **Sécurisé** | JWT, guards, validation, SQL paramétré (SQLx) | [SECURITY.md](./docs/SECURITY.md) |
+| **Fonctionnel** | Bootstrap → routes → tests d’intégration sur chaque brique | [PRINCIPES.md](./docs/PRINCIPES.md#4-fonctionnel) |
+| **Performant** | Pas de `dyn` par route, DI monomorphisée | [ARCHITECTURE.md](./ARCHITECTURE.md) |
+| **DX** | `prelude`, `ruest_err!`, CLI `ruest` | [DX.md](./docs/DX.md) |
+
+```bash
+cargo test -p ruest --test principles   # smoke des piliers
+```
 
 ## Phase 1 (MVP) ✅
 
-Modules, DI, controllers, routing compile-time, validation, config, logger, CLI `forge`, `AppResult`, exemples `basic-api` et `shop-api`.
+Modules, DI, controllers, routing compile-time, validation, config, logger, CLI `ruest`, `AppResult`, exemples `basic-api` et `shop-api`.
 
-## Démarrage
+## Installation (crates.io)
+
+Après publication sur [crates.io](https://crates.io/crates/ruest) :
+
+```bash
+cargo add ruest              # framework dans votre projet
+cargo install ruest-cli      # commande `ruest` (new, g, start, db, …)
+```
+
+Guide de publication pour les mainteneurs : [docs/PUBLISHING.md](./docs/PUBLISHING.md).
+
+## Démarrage (monorepo)
 
 ```bash
 cargo build
@@ -42,12 +64,12 @@ cargo run -p shop-api     # port 3001 — customers + orders (structure README)
 | Exemple | Port | Description |
 |---------|------|-------------|
 | [basic-api](examples/basic-api/) | 3000 | API minimale |
-| [shop-api](examples/shop-api/) | 3001 | Boutique : dto, entities, repository, `forge_err!` |
+| [shop-api](examples/shop-api/) | 3001 | Boutique : dto, entities, repository, `ruest_err!` |
 
 ## Exemple (aligné sur `basic-api`)
 
 ```rust
-use rustforge::prelude::*;
+use ruest::prelude::*;
 
 #[service]
 pub struct UserService { /* … */ }
@@ -84,8 +106,8 @@ pub struct AppModule;
 ```rust
 #[tokio::main]
 async fn main() -> Result<(), CoreError> {
-    rustforge::logger::init();
-    rustforge::bootstrap_app(AppModule)?
+    ruest::logger::init();
+    ruest::bootstrap_app(AppModule)?
         .port(3000)
         .listen()
         .await
@@ -95,7 +117,7 @@ async fn main() -> Result<(), CoreError> {
 Erreurs métier dans les handlers :
 
 ```rust
-return Err(forge_err!(Conflict, "Email already exists"));
+return Err(ruest_err!(Conflict, "Email already exists"));
 ```
 
 ### Sécurité JWT
@@ -113,18 +135,22 @@ Voir [docs/SECURITY.md](docs/SECURITY.md) — guards `#[guard(roles = ["admin"])
 ## Structure du framework
 
 ```text
-rustforge/
+ruest/
 ├── core/          # modules, bootstrap
 ├── di/            # conteneur typé
 ├── macros/        # #[module], #[controller], #[routes], …
 ├── http/          # Axum, AppResult
+├── security/      # JWT, guards, AuthUser
 ├── router/        # chemins statiques
 ├── validation/    # Validate, ValidatedJson
 ├── config/, logger/, cli/, testing/
 └── src/           # bootstrap_app, prelude
+
+ruest-db/            # RuestDB (schema.ruest, migrations, client SQLx)
+├── schema/, parser/, codegen/, runtime/, migrate/
 ```
 
-## Structure d’une app (générée par `forge new`)
+## Structure d’une app (générée par `ruest new`)
 
 ```text
 src/
@@ -141,14 +167,14 @@ src/
         └── users.module.rs
 ```
 
-## CLI `forge`
+## CLI `ruest`
 
 ```bash
-cargo install --path rustforge/cli   # binaires forge + rustforge
-forge new my-api
-forge g resource users
-forge start --watch
-forge doctor
+cargo install --path ruest/cli   # binaire `ruest`
+ruest new my-api
+ruest g resource users
+ruest start --watch
+ruest doctor
 ```
 
 ## Roadmap
@@ -156,7 +182,7 @@ forge doctor
 | Phase | Contenu |
 |-------|---------|
 | **1** | MVP compile-time routing + DI typée + CLI ✅ |
-| **2** | JWT/guards ✅, ForgeDB (Prisma-like) ✅, OpenAPI, extracteurs `#[routes]` |
+| **2** | JWT/guards ✅, RuestDB (Prisma-like) ✅, OpenAPI, extracteurs `#[routes]` |
 | **3** | microservices, queues, cache, observabilité |
 
 ## Licence

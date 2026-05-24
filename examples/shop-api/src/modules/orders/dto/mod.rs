@@ -1,4 +1,4 @@
-use rustforge::prelude::*;
+use ruest::prelude::*;
 use uuid::Uuid;
 
 #[derive(Debug, Clone, Validate, serde::Deserialize)]

@@ -1,4 +1,4 @@
-use rustforge::service;
+use ruest::service;
 
 use super::dto::CreateOrderDto;
 use super::entities::Order;

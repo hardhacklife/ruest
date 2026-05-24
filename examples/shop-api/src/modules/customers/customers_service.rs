@@ -1,4 +1,4 @@
-use rustforge::service;
+use ruest::service;
 
 use uuid::Uuid;
 

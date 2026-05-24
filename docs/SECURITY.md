@@ -1,8 +1,8 @@
-# Sécurité RustForge
+# Sécurité RUEST
 
 ## Vue d'ensemble
 
-Le crate `rustforge-security` fournit :
+Le crate `ruest-security` fournit :
 
 | Composant | Rôle |
 |-----------|------|
@@ -11,16 +11,16 @@ Le crate `rustforge-security` fournit :
 | [`AppBuilder::with_jwt_auth`] | DI + middleware HTTP |
 | [`AuthUser`] | Extracteur Axum (handlers manuels ou futurs `#[routes]`) |
 | [`JwtGuard`] / [`RolesGuard`] / `#[guard]` | Gardes style NestJS |
-| `forge_err!(Unauthorized, …)` | Erreurs HTTP lisibles |
+| `ruest_err!(Unauthorized, …)` | Erreurs HTTP lisibles |
 
 ## Activation
 
 ```rust
-use rustforge::prelude::*;
+use ruest::prelude::*;
 
 #[tokio::main]
 async fn main() -> Result<(), CoreError> {
-    rustforge::logger::init();
+    ruest::logger::init();
 
     let security = SecurityConfig::dev(); // ou SecurityConfig::from_env()?
 
@@ -36,10 +36,10 @@ async fn main() -> Result<(), CoreError> {
 
 | Variable | Description |
 |----------|-------------|
-| `FORGE_JWT_SECRET` | Secret HMAC (obligatoire en prod) |
-| `FORGE_JWT_EXPIRES_IN_SECS` | Durée de vie (défaut `3600`) |
-| `FORGE_JWT_ISSUER` | Claim `iss` optionnel |
-| `FORGE_PUBLIC_ROUTES` | Chemins publics supplémentaires (séparés par `,`) |
+| `RUEST_JWT_SECRET` | Secret HMAC (obligatoire en prod) |
+| `RUEST_JWT_EXPIRES_IN_SECS` | Durée de vie (défaut `3600`) |
+| `RUEST_JWT_ISSUER` | Claim `iss` optionnel |
+| `RUEST_PUBLIC_ROUTES` | Chemins publics supplémentaires (séparés par `,`) |
 
 Routes publiques par défaut : `/health`, `/auth/login`, `/auth/register`.
 
@@ -92,4 +92,4 @@ claims.require_roles(&["admin", "manager"])?;
 
 - `#[get("/path", guards = [JwtGuard])]` sur les macros de routes
 - OAuth2, API keys, rate limiting
-- `forge add jwt` dans le CLI
+- `ruest add jwt` dans le CLI

@@ -1,0 +1,13 @@
+// Schéma RuestDB pour shop-api (optionnel — voir docs/RUESTDB.md)
+model Customer {
+  id    String @id @default(uuid())
+  email String @unique
+  name  String
+}
+
+model Order {
+  id         String @id @default(uuid())
+  customerId String
+  totalCents Int
+  customer   Customer @relation(fields: [customerId], references: [id])
+}

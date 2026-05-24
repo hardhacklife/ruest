@@ -2,7 +2,7 @@
 
 ## Nom du projet
 
-**Nom provisoire :** RustForge Framework
+**Nom provisoire :** RUEST Framework
 
 ---
 
@@ -204,7 +204,7 @@ Le framework sera composé de plusieurs crates Rust.
 ## Structure globale
 
 ```text
-rustforge/
+ruest/
 ├── core/
 ├── macros/
 ├── http/
@@ -249,7 +249,7 @@ Exemple :
 ```rust
 #[tokio::main]
 async fn main() {
-    RustForgeFactory::create(AppModule)
+    RuestFactory::create(AppModule)
         .listen(3000)
         .await;
 }
@@ -594,15 +594,15 @@ Créer une CLI similaire à Nest CLI.
 ## Commandes
 
 ```bash
-rustforge new app
-rustforge generate module users
-rustforge generate controller users
-rustforge generate service users
-rustforge generate resource users
-rustforge build
-rustforge start
-rustforge test
-rustforge migration:create
+ruest new app
+ruest generate module users
+ruest generate controller users
+ruest generate service users
+ruest generate resource users
+ruest build
+ruest start
+ruest test
+ruest migration:create
 ```
 
 ## Fonctionnalités

@@ -2,14 +2,14 @@ mod app_module;
 mod products;
 mod users;
 
-use rustforge::prelude::*;
+use ruest::prelude::*;
 
 use app_module::AppModule;
 
 #[tokio::main]
 async fn main() -> Result<(), CoreError> {
-    rustforge::logger::init();
-    rustforge::bootstrap_app(AppModule)
+    ruest::logger::init();
+    ruest::bootstrap_app(AppModule)
         .expect("bootstrap failed")
         .port(3000)
         .listen()

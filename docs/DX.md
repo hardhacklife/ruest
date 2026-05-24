@@ -1,4 +1,4 @@
-# Developer Experience (DX) — RustForge / Forge
+# Developer Experience (DX) — RUEST
 
 > **Mission :** rendre Rust backend **simple, agréable et rapide à développer** — pas seulement performant.
 
@@ -6,19 +6,23 @@ Rust est déjà rapide. Ce qui manque, c’est un framework **agréable** comme 
 
 ## Philosophie
 
+Voir le guide complet des piliers : **[PRINCIPES.md](./PRINCIPES.md)** (modulaire, typé, sécurisé, fonctionnel).
+
 | Principe | Implémentation |
 |----------|----------------|
-| Masquer la complexité Rust | `Inject<T>`, `#[service]`, `prelude` unique |
-| Convention over configuration | Structure `src/modules/`, `#[module]` |
-| Messages humains | `[Forge DI]`, `[Forge] Bad Request`, `forge_err!` |
-| Compile-time > runtime reflection | Macros routes + DI typée |
-| CLI first | Commande **`forge`** (alias `rustforge`) |
+| Modulaire | `#[module(imports)]`, crates `core` / `http` / `security` / `ruest-db` |
+| Typé | `Inject<T>`, `AppResult`, macros compile-time |
+| Sécurisé | `with_jwt_auth`, `#[guard]`, `ValidatedJson` |
+| Fonctionnel | Exemples + `cargo test -p ruest --test principles` |
+| Masquer la complexité Rust | `prelude` unique |
+| Messages humains | `[Ruest DI]`, `ruest_err!` |
+| CLI first | Commande **`ruest`** (alias `ruest`) |
 
 ## Une seule importation
 
 ```rust
-use rustforge::prelude::*;
-// ou à terme : use forge::prelude::*;
+use ruest::prelude::*;
+// ou à terme : use ruest::prelude::*;
 ```
 
 Tout le nécessaire : macros, `Json`, `AppResult`, `Inject`, `bootstrap_app`, `Validate`, etc.
@@ -61,21 +65,21 @@ pub struct AppModule;
 
 `imports` enregistre la DI des enfants et monte leurs routes avant les controllers locaux (s’il y en a).
 
-## CLI `forge`
+## CLI `ruest`
 
 | Commande | Description |
 |----------|-------------|
-| `forge new my-api` | App avec `modules/`, `config/`, `common/` |
-| `forge new my-api -t microservice` | Template microservice |
-| `forge g resource users` | Scaffold complet (dto, entity, repo, service, controller, module) |
-| `forge g module users` | Module seul |
-| `forge g controller users` | Controller |
-| `forge g service users` | Service |
-| `forge start` | `cargo run` |
-| `forge start --watch` | Hot reload (`cargo-watch`) |
-| `forge build` | Build incremental (profil dev) |
-| `forge test` | Tests |
-| `forge doctor` | Vérifie la structure du projet |
+| `ruest new my-api` | App avec `modules/`, `config/`, `common/` |
+| `ruest new my-api -t microservice` | Template microservice |
+| `ruest g resource users` | Scaffold complet (dto, entity, repo, service, controller, module) |
+| `ruest g module users` | Module seul |
+| `ruest g controller users` | Controller |
+| `ruest g service users` | Service |
+| `ruest start` | `cargo run` |
+| `ruest start --watch` | Hot reload (`cargo-watch`) |
+| `ruest build` | Build incremental (profil dev) |
+| `ruest test` | Tests |
+| `ruest doctor` | Vérifie la structure du projet |
 
 ## Structure imposée (anti-chaos)
 
@@ -99,7 +103,7 @@ src/
 ### DI
 
 ```
-[Forge DI] Service `my_app::UserService` is not registered.
+[Ruest DI] Service `my_app::UserService` is not registered.
 Did you forget to add it to your module?
 
 Try:
@@ -111,7 +115,7 @@ Try:
 ```rust
 async fn handler() -> AppResult<Json<User>> {
     if exists {
-        return Err(forge_err!(Conflict, "Email already exists"));
+        return Err(ruest_err!(Conflict, "Email already exists"));
     }
     Ok(Json(user))
 }
@@ -132,22 +136,22 @@ pub struct CreateUserDto {
 
 | Priorité | Feature | Statut |
 |----------|---------|--------|
-| P0 | CLI `forge` + `g resource` | ✅ |
+| P0 | CLI `ruest` + `g resource` | ✅ |
 | P0 | Prelude + AppResult | ✅ |
 | P0 | DI erreurs humaines | ✅ |
 | P1 | Extracteurs dans `#[routes]` (body, ValidatedJson) | 🔜 |
 | P1 | OpenAPI / Swagger auto (utoipa) | 🔜 |
 | P1 | JWT / guards / `with_jwt_auth` | ✅ voir [SECURITY.md](SECURITY.md) |
-| P1 | ForgeDB (schema.forge, migrations, client) | ✅ voir [FORGEDB.md](FORGEDB.md) |
-| P1 | `forge add redis` | 🔜 |
-| P2 | `forge studio` (routes, providers, logs) | 🔜 |
-| P2 | `forge explain error` (AI) | 🔜 |
+| P1 | RuestDB (schema.ruest, migrations, client) | ✅ voir [RUESTDB.md](RUESTDB.md) |
+| P1 | `ruest add redis` | 🔜 |
+| P2 | `ruest studio` (routes, providers, logs) | 🔜 |
+| P2 | `ruest explain error` (AI) | 🔜 |
 | P3 | Playground cloud | 🔜 |
 
 ## Build rapide
 
 - `incremental = true` dans les apps générées (profil dev)
-- `forge start --watch` pour recompiler au save
+- `ruest start --watch` pour recompiler au save
 - Compilation distribuée : roadmap
 
 ## Ce qu’on évite volontairement

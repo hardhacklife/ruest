@@ -1,4 +1,4 @@
-use rustforge::prelude::*;
+use ruest::prelude::*;
 
 #[derive(Debug, Clone, Validate, serde::Deserialize)]
 pub struct CreateCustomerDto {

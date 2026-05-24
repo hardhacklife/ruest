@@ -1,4 +1,4 @@
-use rustforge::prelude::*;
+use ruest::prelude::*;
 
 use super::dto::{CreateUserDto, User};
 use super::users_service::UserService;
@@ -18,7 +18,7 @@ impl UserController {
     #[post("/")]
     async fn create_user(&self) -> AppResult<Json<User>> {
         let dto = CreateUserDto {
-            email: "new@rustforge.dev".into(),
+            email: "new@ruest.dev".into(),
             name: "New User".into(),
         };
         Ok(Json(self.service.create(dto).await))

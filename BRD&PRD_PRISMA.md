@@ -2,7 +2,7 @@
 
 # Nom du projet
 
-ForgeDB
+RuestDB
 
 ---
 
@@ -115,8 +115,8 @@ Le MVP ne doit pas chercher à recréer Prisma complet.
 Le système doit fonctionner comme ceci :
 
 ```bash
-forge generate
-forge migrate dev
+ruest generate
+ruest migrate dev
 ```
 
 Puis :
@@ -136,7 +136,7 @@ let users = db.user.find_many().await?;
 Créer un fichier :
 
 ```text
-schema.forge
+schema.ruest
 ```
 
 ---
@@ -201,13 +201,13 @@ Pas de :
 ## Structure
 
 ```text
-forge-db/
-├── forge-schema/
-├── forge-parser/
-├── forge-client/
-├── forge-migrate/
-├── forge-query/
-└── forge-cli/
+ruest-db/
+├── ruest-schema/
+├── ruest-parser/
+├── ruest-client/
+├── ruest-migrate/
+├── ruest-query/
+└── ruest-cli/
 ```
 
 ---
@@ -302,9 +302,9 @@ CREATE TABLE users (
 ## Commandes
 
 ```bash
-forge migrate dev
-forge migrate deploy
-forge migrate reset
+ruest migrate dev
+ruest migrate deploy
+ruest migrate reset
 ```
 
 ## Fonctionnalités
@@ -405,10 +405,10 @@ DATABASE_URL=postgres://user:password@localhost:5432/app
 ## Commandes
 
 ```bash
-forge db init
-forge generate
-forge migrate dev
-forge db pull
+ruest db init
+ruest generate
+ruest migrate dev
+ruest db pull
 ```
 
 ---
@@ -420,7 +420,7 @@ forge db pull
 Lire PostgreSQL et générer :
 
 ```text
-schema.forge
+schema.ruest
 ```
 
 ---

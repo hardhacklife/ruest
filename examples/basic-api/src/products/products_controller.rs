@@ -1,4 +1,4 @@
-use rustforge::prelude::*;
+use ruest::prelude::*;
 
 use super::dto::{CreateProductDto, Product};
 use super::products_service::ProductService;

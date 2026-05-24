@@ -1,39 +1,45 @@
 [workspace]
 resolver = "2"
 members = [
-    "rustforge/core",
-    "rustforge/macros",
-    "rustforge/di",
-    "rustforge/router",
-    "rustforge/http",
-    "rustforge/config",
-    "rustforge/validation",
-    "rustforge/logger",
-    "rustforge/testing",
-    "rustforge/security",
-    "rustforge/cli",
-    "rustforge",
-    "forge-db/schema",
-    "forge-db/parser",
-    "forge-db/codegen",
-    "forge-db/runtime",
-    "forge-db/migrate",
+    "ruest/core",
+    "ruest/macros",
+    "ruest/di",
+    "ruest/router",
+    "ruest/http",
+    "ruest/config",
+    "ruest/validation",
+    "ruest/logger",
+    "ruest/testing",
+    "ruest/security",
+    "ruest/cli",
+    "ruest",
+    "ruest-db/schema",
+    "ruest-db/parser",
+    "ruest-db/codegen",
+    "ruest-db/runtime",
+    "ruest-db/migrate",
     "examples/basic-api",
     "examples/shop-api",
-    "examples/forgedb-demo",
+    "examples/ruest-db-demo",
+    "benchmarks/axum-baseline",
 ]
 
 [workspace.package]
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
-authors = ["RustForge Contributors"]
-repository = "https://github.com/rustforge/rustforge"
+authors = ["hardhacklife"]
+repository = "https://github.com/hardhacklife/ruest"
+homepage = "https://github.com/hardhacklife/ruest"
+documentation = "https://docs.rs/ruest"
+readme = "README.md"
 rust-version = "1.75"
+keywords = ["web", "framework", "nestjs", "axum", "api"]
+categories = ["web-programming::http-server", "asynchronous"]
 
 [workspace.dependencies]
 tokio = { version = "1", features = ["full"] }
-# Toutes les fonctionnalités Axum recommandées pour RustForge (HTTP/1+2, WS, multipart, etc.)
+# Toutes les fonctionnalités Axum recommandées pour RUEST (HTTP/1+2, WS, multipart, etc.)
 axum = { version = "0.7", features = [
     "http1",
     "http2",
@@ -73,23 +79,25 @@ bytes = "1"
 uuid = { version = "1", features = ["v4", "serde"] }
 once_cell = "1"
 
-rustforge = { path = "rustforge" }
-rustforge-core = { path = "rustforge/core" }
-rustforge-macros = { path = "rustforge/macros" }
-rustforge-di = { path = "rustforge/di" }
-rustforge-router = { path = "rustforge/router" }
-rustforge-http = { path = "rustforge/http" }
-rustforge-config = { path = "rustforge/config" }
-rustforge-validation = { path = "rustforge/validation" }
-rustforge-logger = { path = "rustforge/logger" }
-rustforge-testing = { path = "rustforge/testing" }
-rustforge-security = { path = "rustforge/security" }
+# version = même valeur que [workspace.package].version (requis pour cargo publish)
+ruest = { path = "ruest", version = "0.1.0" }
+ruest-core = { path = "ruest/core", version = "0.1.0" }
+ruest-macros = { path = "ruest/macros", version = "0.1.0" }
+ruest-di = { path = "ruest/di", version = "0.1.0" }
+ruest-router = { path = "ruest/router", version = "0.1.0" }
+ruest-http = { path = "ruest/http", version = "0.1.0" }
+ruest-config = { path = "ruest/config", version = "0.1.0" }
+ruest-validation = { path = "ruest/validation", version = "0.1.0" }
+ruest-logger = { path = "ruest/logger", version = "0.1.0" }
+ruest-testing = { path = "ruest/testing", version = "0.1.0" }
+ruest-security = { path = "ruest/security", version = "0.1.0" }
 jsonwebtoken = "9"
 chrono = { version = "0.4", features = ["serde"] }
 sqlx = { version = "0.8", features = ["runtime-tokio", "postgres", "chrono", "uuid"] }
 
-forgedb-schema = { path = "forge-db/schema" }
-forgedb-parser = { path = "forge-db/parser" }
-forgedb-codegen = { path = "forge-db/codegen" }
-forgedb-runtime = { path = "forge-db/runtime" }
-forgedb-migrate = { path = "forge-db/migrate" }
+ruest-db-schema = { path = "ruest-db/schema", version = "0.1.0" }
+ruest-db-parser = { path = "ruest-db/parser", version = "0.1.0" }
+ruest-db-codegen = { path = "ruest-db/codegen", version = "0.1.0" }
+ruest-db-runtime = { path = "ruest-db/runtime", version = "0.1.0" }
+ruest-db-migrate = { path = "ruest-db/migrate", version = "0.1.0" }
+criterion = { version = "0.5", features = ["html_reports"] }

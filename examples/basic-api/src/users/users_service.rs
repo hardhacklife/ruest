@@ -1,6 +1,6 @@
 use std::sync::RwLock;
 
-use rustforge::service;
+use ruest::service;
 use uuid::Uuid;
 
 use super::dto::{CreateUserDto, User};
@@ -15,7 +15,7 @@ impl Default for UserService {
         Self {
             users: RwLock::new(vec![User {
                 id: Uuid::new_v4(),
-                email: "demo@rustforge.dev".into(),
+                email: "demo@ruest.dev".into(),
                 name: "Demo User".into(),
             }]),
         }

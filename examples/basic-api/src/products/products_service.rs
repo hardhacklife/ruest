@@ -1,6 +1,6 @@
 use std::sync::RwLock;
 
-use rustforge::service;
+use ruest::service;
 use uuid::Uuid;
 
 use super::dto::{CreateProductDto, Product};
@@ -16,7 +16,7 @@ impl Default for ProductService {
             products: RwLock::new(vec![Product {
                 id: Uuid::new_v4(),
                 name: "Demo Product".into(),
-                description: "Sample product for RustForge basic-api".into(),
+                description: "Sample product for RUEST basic-api".into(),
                 price: 9.99,
             }]),
         }

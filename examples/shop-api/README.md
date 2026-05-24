@@ -1,6 +1,6 @@
 # shop-api
 
-Deuxième exemple RustForge — structure complète du [README](../../README.md) :
+Deuxième exemple RUEST — structure complète du [README](../../README.md) :
 
 - `config/` — port via `PORT` (défaut **3001**)
 - `common/` — helpers partagés
@@ -36,6 +36,6 @@ cargo run -p shop-api
 |---|-----------|----------|
 | Port | 3000 | 3001 |
 | Structure | modules plats | dto/ + entities/ + **repository** |
-| Erreurs | `AppResult` | `AppResult` + **`forge_err!`** |
+| Erreurs | `AppResult` | `AppResult` + **`ruest_err!`** |
 | DI | 2 modules | orders → **Inject&lt;CustomerService&gt;** |
 | Config | inline | **`config::port()`** |

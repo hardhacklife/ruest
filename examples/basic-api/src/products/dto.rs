@@ -1,4 +1,4 @@
-use rustforge::Validate;
+use ruest::Validate;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Validate)]

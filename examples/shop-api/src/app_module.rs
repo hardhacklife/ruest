@@ -1,4 +1,4 @@
-use rustforge::prelude::*;
+use ruest::prelude::*;
 
 use crate::modules::auth::AuthModule;
 use crate::modules::customers::CustomersModule;
