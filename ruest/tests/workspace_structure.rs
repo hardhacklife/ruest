@@ -37,7 +37,7 @@ const RUEST_INTERNAL_MODULES: &[&str] = &[
 ];
 
 const PUBLISHED_CRATES: &[(&str, &str)] = &[
-    ("ruest", "ruest/Cargo.toml"),
+    ("ruest-framework", "ruest/Cargo.toml"),
     ("ruest-macros", "ruest/macros/Cargo.toml"),
     ("ruest-db", "ruest-db/Cargo.toml"),
     ("ruest-cli", "ruest/cli/Cargo.toml"),

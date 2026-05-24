@@ -47,10 +47,12 @@ Modules, DI, controllers, routing compile-time, validation, config, logger, CLI 
 Après publication sur [crates.io](https://crates.io/crates/ruest) :
 
 ```bash
-cargo add ruest              # framework dans votre projet
+cargo add ruest-framework    # framework (import : use ruest::prelude::*;)
 cargo add ruest-db           # base de données (schema.ruest, migrations, SQLx)
 cargo install ruest-cli      # commande `ruest` (new, g, start, db, …)
 ```
+
+> Le nom **`ruest`** sur [crates.io](https://crates.io/crates/ruest) est déjà utilisé par un autre projet ; le framework est publié sous **`ruest-framework`** (même API `ruest::` dans le code).
 
 Guide de publication pour les mainteneurs : [docs/PUBLISHING.md](./docs/PUBLISHING.md).
 

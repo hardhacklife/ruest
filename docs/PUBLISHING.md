@@ -6,13 +6,13 @@ Repo : [github.com/hardhacklife/ruest](https://github.com/hardhacklife/ruest)
 
 ```bash
 # Framework dans un projet
-cargo add ruest
+cargo add ruest-framework   # import : use ruest::prelude::*;
 
 # CLI globale (commande `ruest`)
 cargo install ruest-cli
 ```
 
-La doc API est générée automatiquement sur [docs.rs/ruest](https://docs.rs/ruest) après publication du crate `ruest`.
+La doc API : [docs.rs/ruest-framework](https://docs.rs/ruest-framework).
 
 ## Prérequis (une seule fois)
 
@@ -26,7 +26,8 @@ cargo login
 ```
 
 4. Vérifier que les noms sont libres (ou vous appartiennent) :  
-   `ruest`, `ruest-db`, `ruest-core`, `ruest-macros`, `ruest-cli`, etc.
+   `ruest-framework`, `ruest-db`, `ruest-macros`, `ruest-cli`, etc.  
+   (le nom **`ruest`** seul est déjà pris sur crates.io par un autre auteur)
 
 5. Pousser le code **rebrandé** sur [github.com/hardhacklife/ruest](https://github.com/hardhacklife/ruest) — le repo doit contenir `ruest/`, `ruest-db/`, et plus `rustforge/` ni `forge-db/`.
 
@@ -36,7 +37,7 @@ cargo login
 chmod +x scripts/publish-crates.sh
 # Valide le premier crate ; les suivants exigent les deps déjà sur crates.io
 cargo publish -p ruest-db --dry-run --allow-dirty
-cargo publish -p ruest --dry-run --allow-dirty   # après publication de toute la chaîne
+cargo publish -p ruest-framework --dry-run --allow-dirty
 ```
 
 `DRY_RUN=1 ./scripts/publish-crates.sh` ne peut pas simuler toute la chaîne : à partir du 2ᵉ crate, Cargo cherche les dépendances sur crates.io.
@@ -55,16 +56,16 @@ Le script publie **4 crates** seulement (~25 s entre chaque upload) :
 | Crate | Contenu |
 |-------|---------|
 | `ruest-macros` | `#[module]`, `#[controller]`, `#[routes]`, … (obligatoire séparé : proc-macro) |
-| `ruest` | DI, core, HTTP Axum, router, config, validation, logger, security, testing |
+| `ruest-framework` | DI, core, HTTP Axum, … (import `ruest::`) |
 | `ruest-db` | RuestDB (schema, migrations, client SQLx) |
 | `ruest-cli` | commande `ruest` |
 
-`cargo add ruest` tire `ruest-macros` en dépendance transitive — vous n’avez pas à l’ajouter à la main.
+`cargo add ruest-framework` tire `ruest-macros` en dépendance transitive. Dans le code : `use ruest::prelude::*;` (`[lib] name = "ruest"`).
 
 ## Après publication
 
 ```bash
-cargo add ruest@0.1
+cargo add ruest-framework@0.1
 cargo add ruest-db@0.1   # base de données (optionnel)
 cargo install ruest-cli
 ```
@@ -78,6 +79,7 @@ Créer une **GitHub Release** `v0.1.0` avec les notes de version.
 | `crate already exists` | Le nom est pris ; choisir un préfixe ou réclamer le crate |
 | `dependency ... not found` | Publier les crates dépendantes d’abord (voir ordre dans le script) |
 | `missing readme` | Vérifier `readme.workspace = true` dans le `Cargo.toml` du crate |
+| `403` / not an owner | Le nom est pris par quelqu’un d’autre → utiliser `ruest-framework` |
 | `403` / auth | Refaire `cargo login` |
 
 ## Mise à jour de version

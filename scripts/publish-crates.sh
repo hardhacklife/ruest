@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
-# Publie RUEST sur crates.io — 4 packages seulement.
+# Publie RUEST sur crates.io.
 #
-# | Package        | Rôle                                      |
-# |----------------|-------------------------------------------|
-# | ruest-macros   | proc-macros (#[module], #[controller], …) |
-# | ruest          | framework complet (DI, HTTP, JWT, …)      |
-# | ruest-db       | RuestDB (schema, migrations, SQLx)        |
-# | ruest-cli      | binaire `ruest`                           |
+# Noms crates.io (package) vs code (import) :
+#   ruest-framework  →  use ruest::   (le nom « ruest » est pris par un autre crate)
+#   ruest-macros     →  (transitif, proc-macros)
+#   ruest-db         →  use ruest_db::
+#   ruest-cli        →  binaire `ruest`
 #
-# Prérequis : cargo login + e-mail vérifié sur crates.io
+# Prérequis : cargo login + e-mail vérifié sur https://crates.io/settings/profile
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -21,15 +20,20 @@ publish() {
   if [[ -n "$DRY_RUN" ]]; then
     cargo publish -p "$crate" --dry-run $ALLOW_DIRTY
   else
-    cargo publish -p "$crate" $ALLOW_DIRTY
-    echo "    Waiting for index propagation..."
-    sleep 25
+    if cargo publish -p "$crate" $ALLOW_DIRTY; then
+      echo "    Waiting for index propagation..."
+      sleep 25
+    else
+      echo "    Échec — voir le message ci-dessus."
+      exit 1
+    fi
   fi
 }
 
+# Déjà publié ? Commentez la ligne.
 CRATES=(
-  ruest-macros
-  ruest
+  # ruest-macros
+  ruest-framework
   ruest-db
   ruest-cli
 )
@@ -40,6 +44,6 @@ done
 
 echo ""
 echo "Terminé. Installation :"
-echo "  cargo add ruest"
+echo "  cargo add ruest-framework   # dans le code : use ruest::prelude::*;"
 echo "  cargo add ruest-db          # optionnel"
-echo "  cargo install ruest-cli"
+echo "  cargo install ruest-cli     # commande: ruest"

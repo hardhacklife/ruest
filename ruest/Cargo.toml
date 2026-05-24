@@ -1,5 +1,5 @@
 [package]
-name = "ruest"
+name = "ruest-framework"
 description = "RUEST (Rust + NestJS) — framework backend : DI, modules, HTTP Axum, JWT, validation"
 version.workspace = true
 edition.workspace = true
@@ -12,6 +12,10 @@ readme.workspace = true
 rust-version.workspace = true
 keywords.workspace = true
 categories.workspace = true
+
+# Nom crates.io = ruest-framework ; import dans le code = ruest:: (crate « ruest » pris sur crates.io)
+[lib]
+name = "ruest"
 
 [dependencies]
 async-trait.workspace = true
