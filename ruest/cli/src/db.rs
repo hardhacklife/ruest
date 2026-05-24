@@ -2,7 +2,7 @@ use std::env;
 use std::path::PathBuf;
 
 use anyhow::Result;
-use ruest_db_migrate::{
+use ruest_db::{
     create_migration, db_init, generate_client, migrate_apply, migrate_reset, MigrateError,
 };
 

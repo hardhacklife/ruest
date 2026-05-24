@@ -1,23 +1,10 @@
 [workspace]
 resolver = "2"
 members = [
-    "ruest/core",
     "ruest/macros",
-    "ruest/di",
-    "ruest/router",
-    "ruest/http",
-    "ruest/config",
-    "ruest/validation",
-    "ruest/logger",
-    "ruest/testing",
-    "ruest/security",
-    "ruest/cli",
     "ruest",
-    "ruest-db/schema",
-    "ruest-db/parser",
-    "ruest-db/codegen",
-    "ruest-db/runtime",
-    "ruest-db/migrate",
+    "ruest/cli",
+    "ruest-db",
     "examples/basic-api",
     "examples/shop-api",
     "examples/ruest-db-demo",
@@ -81,23 +68,10 @@ once_cell = "1"
 
 # version = même valeur que [workspace.package].version (requis pour cargo publish)
 ruest = { path = "ruest", version = "0.1.0" }
-ruest-core = { path = "ruest/core", version = "0.1.0" }
 ruest-macros = { path = "ruest/macros", version = "0.1.0" }
-ruest-di = { path = "ruest/di", version = "0.1.0" }
-ruest-router = { path = "ruest/router", version = "0.1.0" }
-ruest-http = { path = "ruest/http", version = "0.1.0" }
-ruest-config = { path = "ruest/config", version = "0.1.0" }
-ruest-validation = { path = "ruest/validation", version = "0.1.0" }
-ruest-logger = { path = "ruest/logger", version = "0.1.0" }
-ruest-testing = { path = "ruest/testing", version = "0.1.0" }
-ruest-security = { path = "ruest/security", version = "0.1.0" }
 jsonwebtoken = "9"
 chrono = { version = "0.4", features = ["serde"] }
 sqlx = { version = "0.8", features = ["runtime-tokio", "postgres", "chrono", "uuid"] }
 
-ruest-db-schema = { path = "ruest-db/schema", version = "0.1.0" }
-ruest-db-parser = { path = "ruest-db/parser", version = "0.1.0" }
-ruest-db-codegen = { path = "ruest-db/codegen", version = "0.1.0" }
-ruest-db-runtime = { path = "ruest-db/runtime", version = "0.1.0" }
-ruest-db-migrate = { path = "ruest-db/migrate", version = "0.1.0" }
+ruest-db = { path = "ruest-db", version = "0.1.0" }
 criterion = { version = "0.5", features = ["html_reports"] }

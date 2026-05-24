@@ -5,7 +5,7 @@ mod ruestdb_client;
 
 use anyhow::Result;
 use ruestdb_client::RuestDbClient;
-use ruest_db_runtime::RuestDb;
+use ruest_db::RuestDb;
 
 #[tokio::main]
 async fn main() -> Result<()> {

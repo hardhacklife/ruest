@@ -26,7 +26,7 @@ cargo login
 ```
 
 4. Vérifier que les noms sont libres (ou vous appartiennent) :  
-   `ruest`, `ruest-core`, `ruest-macros`, `ruest-cli`, `ruest-db-*`, etc.
+   `ruest`, `ruest-db`, `ruest-core`, `ruest-macros`, `ruest-cli`, etc.
 
 5. Pousser le code **rebrandé** sur [github.com/hardhacklife/ruest](https://github.com/hardhacklife/ruest) — le repo doit contenir `ruest/`, `ruest-db/`, et plus `rustforge/` ni `forge-db/`.
 
@@ -35,7 +35,7 @@ cargo login
 ```bash
 chmod +x scripts/publish-crates.sh
 # Valide le premier crate ; les suivants exigent les deps déjà sur crates.io
-cargo publish -p ruest-db-schema --dry-run --allow-dirty
+cargo publish -p ruest-db --dry-run --allow-dirty
 cargo publish -p ruest --dry-run --allow-dirty   # après publication de toute la chaîne
 ```
 
@@ -50,12 +50,22 @@ git push origin master --tags
 ./scripts/publish-crates.sh
 ```
 
-Le script publie **17 crates** dans l’ordre des dépendances (~25 s d’attente entre chaque upload pour l’index crates.io).
+Le script publie **4 crates** seulement (~25 s entre chaque upload) :
+
+| Crate | Contenu |
+|-------|---------|
+| `ruest-macros` | `#[module]`, `#[controller]`, `#[routes]`, … (obligatoire séparé : proc-macro) |
+| `ruest` | DI, core, HTTP Axum, router, config, validation, logger, security, testing |
+| `ruest-db` | RuestDB (schema, migrations, client SQLx) |
+| `ruest-cli` | commande `ruest` |
+
+`cargo add ruest` tire `ruest-macros` en dépendance transitive — vous n’avez pas à l’ajouter à la main.
 
 ## Après publication
 
 ```bash
 cargo add ruest@0.1
+cargo add ruest-db@0.1   # base de données (optionnel)
 cargo install ruest-cli
 ```
 

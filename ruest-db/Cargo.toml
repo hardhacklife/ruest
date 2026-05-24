@@ -1,0 +1,24 @@
+[package]
+name = "ruest-db"
+description = "RuestDB — schema DSL, migrations PostgreSQL et client SQLx (un seul package)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+readme.workspace = true
+rust-version.workspace = true
+keywords = ["database", "postgres", "sqlx", "orm", "prisma"]
+categories = ["database"]
+
+[dependencies]
+serde = { workspace = true, features = ["derive"] }
+thiserror.workspace = true
+tracing.workspace = true
+dotenvy.workspace = true
+tokio.workspace = true
+sqlx = { version = "0.8", features = ["runtime-tokio", "postgres", "chrono", "uuid"] }
+chrono = { workspace = true, features = ["serde"] }
+uuid = { workspace = true, features = ["v4", "serde"] }

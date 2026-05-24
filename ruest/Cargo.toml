@@ -1,6 +1,6 @@
 [package]
 name = "ruest"
-description = "RUEST (Rust + NestJS) — modular backend framework: DI, controllers, JWT, RuestDB"
+description = "RUEST (Rust + NestJS) — framework backend : DI, modules, HTTP Axum, JWT, validation"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -19,19 +19,32 @@ tokio.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true
-ruest-core.workspace = true
-ruest-di.workspace = true
-ruest-http.workspace = true
-ruest-router.workspace = true
-ruest-config.workspace = true
-ruest-validation.workspace = true
-ruest-logger.workspace = true
-ruest-macros.workspace = true
-ruest-security.workspace = true
-ruest-testing.workspace = true
+axum.workspace = true
+hyper.workspace = true
+http.workspace = true
+http-body-util.workspace = true
+bytes.workspace = true
+tower.workspace = true
+tower-http.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+config.workspace = true
+dotenvy.workspace = true
+validator.workspace = true
+jsonwebtoken.workspace = true
+chrono.workspace = true
+ruest-macros = { path = "macros", version = "0.1.0" }
 
 [dev-dependencies]
-ruest-testing.workspace = true
 tokio = { workspace = true, features = ["rt-multi-thread", "macros"] }
 tower.workspace = true
 serde_json.workspace = true
+criterion.workspace = true
+
+[[bench]]
+name = "container_resolve"
+harness = false
+
+[[bench]]
+name = "join_paths"
+harness = false

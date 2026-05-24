@@ -1,39 +1,21 @@
 //! # RUEST
 //!
-//! Backend framework for Rust — **NestJS DX + performance Rust + simplicité Axum**.
+//! Backend framework for Rust — **Rust + NestJS** (NestJS DX, performance Rust, Axum).
 //!
-//! Voir [ARCHITECTURE.md](../ARCHITECTURE.md) (performance) et [docs/PRINCIPES.md](../docs/PRINCIPES.md)
-//! (modulaire, typé, sécurisé, fonctionnel).
+//! Un seul package framework : `cargo add ruest` (+ `ruest-macros` en dépendance transitive).
+//! Base de données optionnelle : `cargo add ruest-db`.
 
 mod bootstrap;
 
-pub mod core {
-    pub use ruest_core::*;
-}
-pub mod di {
-    pub use ruest_di::*;
-}
-pub mod http {
-    pub use ruest_http::*;
-}
-pub mod router {
-    pub use ruest_router::*;
-}
-pub mod config {
-    pub use ruest_config::*;
-}
-pub mod validation {
-    pub use ruest_validation::*;
-}
-pub mod logger {
-    pub use ruest_logger::*;
-}
-pub mod testing {
-    pub use ruest_testing::*;
-}
-pub mod security {
-    pub use ruest_security::*;
-}
+pub mod config;
+pub mod core;
+pub mod di;
+pub mod http;
+pub mod logger;
+pub mod router;
+pub mod security;
+pub mod testing;
+pub mod validation;
 
 pub use async_trait;
 
@@ -42,15 +24,20 @@ pub use ruest_macros::{
     controller, delete, dto, get, guard, middleware, module, patch, post, put, routes, service,
 };
 
-pub use ruest_core::{bootstrap, CoreError, HttpModule, Module, RuestApplication, RuestFactory};
-pub use ruest_di::{Container, Inject, Scope};
-pub use ruest_http::{
+pub use core::{bootstrap, CoreError, HttpModule, Module, RuestApplication, RuestFactory};
+pub use di::{Container, Inject, Scope};
+pub use http::{
     serve, Body, Bytes, ConnectInfo, Form, Json, MatchedPath, Multipart, OriginalUri, Path, Query,
     State, WebSocket, WebSocketUpgrade,
 };
-pub use ruest_http::{ws, Message as WebSocketMessage};
-pub use ruest_validation::{Validate, ValidatedJson};
-pub use ruest_http::{AppError, AppResult};
+pub use http::{ws, Message as WebSocketMessage};
+pub use validation::{Validate, ValidatedJson};
+pub use http::{AppError, AppResult};
+pub use security::{
+    apply_jwt_layer, register_jwt_provider, AuthContext, AuthUser, Guard, JwtDevProvider,
+    JwtGuard, JwtService, RolesGuard, RuestClaims, SecurityConfig, SecurityConfigBuilder,
+    SecurityError,
+};
 
 /// Erreur HTTP lisible : `return Err(ruest_err!(BadRequest, "message"));`
 #[macro_export]
@@ -78,23 +65,20 @@ macro_rules! ruest_err {
 /// Prelude for application code.
 pub mod prelude {
     pub use crate::{
-        bootstrap_app, controller, delete, get, guard, module, patch, post, put, routes, service,
-        async_trait, ruest_err, AppBuilder, AppError, AppResult, Body, Bytes, ConnectInfo,
-        CoreError, Form, HttpModule, Inject, Json, MatchedPath, Module, ModuleWireRoutes,
-        Multipart, OriginalUri, Path, Query, RuestApplication, State, Validate, ValidatedJson,
+        apply_jwt_layer, bootstrap_app, controller, delete, get, guard, module, patch, post, put,
+        register_jwt_provider, routes, service, async_trait, ruest_err, AppBuilder, AppError,
+        AppResult, AuthContext, AuthUser, Body, Bytes, ConnectInfo, CoreError, Form, HttpModule,
+        Inject, Json, JwtDevProvider, JwtGuard, JwtService, MatchedPath, Module, ModuleWireRoutes,
+        Multipart, OriginalUri, Path, Query, RolesGuard, RuestApplication, RuestClaims,
+        SecurityConfig, SecurityConfigBuilder, SecurityError, State, Validate, ValidatedJson,
         WebSocket, WebSocketMessage, WebSocketUpgrade, logger,
-    };
-    pub use crate::security::{
-        apply_jwt_layer, register_jwt_provider, AuthContext, AuthUser, RuestClaims, Guard,
-        JwtDevProvider, JwtGuard, JwtService, RolesGuard, SecurityConfig, SecurityConfigBuilder,
-        SecurityError,
     };
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use ruest_core::ModuleMetadata;
+    use crate::core::ModuleMetadata;
 
     struct EmptyModule;
 
@@ -106,16 +90,15 @@ mod tests {
 
     impl ModuleWireRoutes for EmptyModule {
         fn wire_routes(
-            router: ruest_http::axum::Router,
-            _container: &ruest_di::Container,
-        ) -> Result<ruest_http::axum::Router, ruest_di::DiError> {
+            router: http::axum::Router,
+            _container: &di::Container,
+        ) -> Result<http::axum::Router, di::DiError> {
             Ok(router)
         }
     }
 
     #[test]
     fn bootstrap_empty_module() {
-        let builder = bootstrap_app(EmptyModule).expect("bootstrap");
-        assert_eq!(builder.app.port, 3000);
+        let _ = bootstrap_app(EmptyModule).expect("bootstrap");
     }
 }

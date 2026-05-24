@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
-# Publie tous les crates RUEST sur crates.io dans l'ordre des dépendances.
-# Prérequis : cargo login <API_TOKEN>  (https://crates.io/settings/tokens)
+# Publie RUEST sur crates.io — 4 packages seulement.
+#
+# | Package        | Rôle                                      |
+# |----------------|-------------------------------------------|
+# | ruest-macros   | proc-macros (#[module], #[controller], …) |
+# | ruest          | framework complet (DI, HTTP, JWT, …)      |
+# | ruest-db       | RuestDB (schema, migrations, SQLx)        |
+# | ruest-cli      | binaire `ruest`                           |
+#
+# Prérequis : cargo login + e-mail vérifié sur crates.io
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -20,22 +28,9 @@ publish() {
 }
 
 CRATES=(
-  ruest-db-schema
-  ruest-db-parser
-  ruest-db-codegen
-  ruest-db-runtime
-  ruest-db-migrate
-  ruest-di
-  ruest-router
-  ruest-config
-  ruest-validation
-  ruest-logger
   ruest-macros
-  ruest-core
-  ruest-http
-  ruest-security
-  ruest-testing
   ruest
+  ruest-db
   ruest-cli
 )
 
@@ -44,6 +39,7 @@ for c in "${CRATES[@]}"; do
 done
 
 echo ""
-echo "Terminé. Les utilisateurs peuvent faire :"
+echo "Terminé. Installation :"
 echo "  cargo add ruest"
+echo "  cargo add ruest-db          # optionnel"
 echo "  cargo install ruest-cli"

@@ -3,7 +3,7 @@
 pub mod customer;
 pub mod order;
 
-use ruest_db_runtime::RuestDb;
+use ruest_db::RuestDb;
 
 pub struct RuestDbClient {
     inner: RuestDb,

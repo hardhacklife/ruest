@@ -100,14 +100,14 @@ Détails : [SECURITY.md](./SECURITY.md).
 | Bootstrap + routes | `cargo test -p ruest` · `framework_integration` |
 | DI + modules | `ruest-core/tests/module_configure` |
 | Sécurité JWT | `ruest-security/tests/jwt_test` |
-| RuestDB | `ruest-db-parser`, `ruest-db-codegen`, `examples/ruest-db-demo` |
+| RuestDB | crate `ruest-db`, `examples/ruest-db-demo` |
 | Apps exemples | `basic-api` :3000, `shop-api` :3001 (+ auth JWT) |
 
 Flux standard qui doit toujours fonctionner :
 
 ```bash
 cargo build
-cargo test -p ruest -p ruest-security -p ruest-db-parser
+cargo test -p ruest -p ruest-security -p ruest-db
 cargo run -p shop-api
 ```
 

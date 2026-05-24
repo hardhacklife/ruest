@@ -1,8 +1,8 @@
 //! Généré par RuestDB — ne pas modifier.
 
-use ruest_db_runtime::{RuestDb, RuestDbError};
-use ruest_db_runtime::serde::{Deserialize, Serialize};
-use ruest_db_runtime::Row;
+use ruest_db::{RuestDb, RuestDbError};
+use ruest_db::serde::{Deserialize, Serialize};
+use ruest_db::Row;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Order {
@@ -32,7 +32,7 @@ impl OrderDelegate {
         Self { db }
     }
 
-    fn map_row(row: &ruest_db_runtime::sqlx::postgres::PgRow) -> Result<Order, RuestDbError> {
+    fn map_row(row: &ruest_db::sqlx::postgres::PgRow) -> Result<Order, RuestDbError> {
         Ok(Order {
             id: row.try_get::<String, _>("id")?,
             customerId: row.try_get::<String, _>("customerId")?,
@@ -42,13 +42,13 @@ impl OrderDelegate {
 
     pub async fn find_many(&self) -> Result<Vec<Order>, RuestDbError> {
         let sql = "SELECT \"id\", \"customer_id\", \"total_cents\" FROM \"orders\" ORDER BY \"id\"";
-        let rows = ruest_db_runtime::sqlx::query(sql).fetch_all(self.db.pool()).await?;
+        let rows = ruest_db::sqlx::query(sql).fetch_all(self.db.pool()).await?;
         rows.iter().map(Self::map_row).collect()
     }
 
     pub async fn find_unique(&self, id: String) -> Result<Option<Order>, RuestDbError> {
         let sql = "SELECT \"id\", \"customer_id\", \"total_cents\" FROM \"orders\" WHERE \"id\" = $1";
-        let row = ruest_db_runtime::sqlx::query(&sql)
+        let row = ruest_db::sqlx::query(&sql)
             .bind(id)
             .fetch_optional(self.db.pool())
             .await?;
@@ -57,7 +57,7 @@ impl OrderDelegate {
 
     pub async fn create(&self, input: CreateOrder) -> Result<Order, RuestDbError> {
         let sql = "INSERT INTO \"orders\" (\"customer_id\", \"total_cents\") VALUES ($1, $2) RETURNING \"id\", \"customer_id\", \"total_cents\"";
-        let row = ruest_db_runtime::sqlx::query(sql)
+        let row = ruest_db::sqlx::query(sql)
             .bind(input.customerId)
             .bind(input.totalCents)
             .fetch_one(self.db.pool())
@@ -78,7 +78,7 @@ impl OrderDelegate {
         if let Some(v) = input.totalCents { current.totalCents = v; }
 
         let sql = "UPDATE \"orders\" SET \"customer_id\" = $2, \"total_cents\" = $3 WHERE \"id\" = $1 RETURNING \"id\", \"customer_id\", \"total_cents\"";
-        let row = ruest_db_runtime::sqlx::query(sql)
+        let row = ruest_db::sqlx::query(sql)
             .bind(id)
             .bind(current.customerId)
             .bind(current.totalCents)
@@ -90,7 +90,7 @@ impl OrderDelegate {
 
     pub async fn delete(&self, id: String) -> Result<bool, RuestDbError> {
         let sql = "DELETE FROM \"orders\" WHERE \"id\" = $1";
-        let r = ruest_db_runtime::sqlx::query(sql).bind(id).execute(self.db.pool()).await?;
+        let r = ruest_db::sqlx::query(sql).bind(id).execute(self.db.pool()).await?;
         Ok(r.rows_affected() > 0)
     }
 }

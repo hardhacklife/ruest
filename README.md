@@ -48,6 +48,7 @@ Après publication sur [crates.io](https://crates.io/crates/ruest) :
 
 ```bash
 cargo add ruest              # framework dans votre projet
+cargo add ruest-db           # base de données (schema.ruest, migrations, SQLx)
 cargo install ruest-cli      # commande `ruest` (new, g, start, db, …)
 ```
 
@@ -135,19 +136,15 @@ Voir [docs/SECURITY.md](docs/SECURITY.md) — guards `#[guard(roles = ["admin"])
 ## Structure du framework
 
 ```text
-ruest/
-├── core/          # modules, bootstrap
-├── di/            # conteneur typé
-├── macros/        # #[module], #[controller], #[routes], …
-├── http/          # Axum, AppResult
-├── security/      # JWT, guards, AuthUser
-├── router/        # chemins statiques
-├── validation/    # Validate, ValidatedJson
-├── config/, logger/, cli/, testing/
-└── src/           # bootstrap_app, prelude
+ruest/               # crate unique `ruest` (modules internes : core, di, http, …)
+├── src/core, di, http, security, …
+├── macros/          # ruest-macros (proc-macros, dépendance du crate ruest)
+└── cli/             # ruest-cli → binaire `ruest`
 
-ruest-db/            # RuestDB (schema.ruest, migrations, client SQLx)
-├── schema/, parser/, codegen/, runtime/, migrate/
+ruest-db/            # RuestDB — `cargo add ruest-db`
+```
+
+**Sur crates.io :** `ruest` + `ruest-macros` (transitif) + `ruest-db` (optionnel) + `ruest-cli` (install).
 ```
 
 ## Structure d’une app (générée par `ruest new`)

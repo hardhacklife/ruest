@@ -23,80 +23,78 @@ fn assert_file_exists(path: impl AsRef<Path>) {
     assert!(path.is_file(), "fichier attendu: {}", path.display());
 }
 
-/// Crates internes obligatoires du framework.
-const EXPECTED_CRATES: &[&str] = &[
+/// Modules internes du crate `ruest` (plus de crates séparés sur crates.io).
+const RUEST_INTERNAL_MODULES: &[&str] = &[
     "core",
-    "macros",
     "di",
     "router",
     "http",
     "config",
     "validation",
     "logger",
-    "testing",
     "security",
-    "cli",
+    "testing",
 ];
 
-const RUESTDB_CRATES: &[&str] = &["schema", "parser", "codegen", "runtime", "migrate"];
+const PUBLISHED_CRATES: &[(&str, &str)] = &[
+    ("ruest", "ruest/Cargo.toml"),
+    ("ruest-macros", "ruest/macros/Cargo.toml"),
+    ("ruest-db", "ruest-db/Cargo.toml"),
+    ("ruest-cli", "ruest/cli/Cargo.toml"),
+];
 
-/// Points d'entrée publics par crate (API stable / macros).
+/// Points d'entrée publics (API stable / macros).
 const KEY_FILES: &[(&str, &str)] = &[
-    ("core", "src/module.rs"),
-    ("core", "src/app.rs"),
-    ("macros", "src/lib.rs"),
-    ("macros", "src/module.rs"),
-    ("macros", "src/controller.rs"),
-    ("macros", "src/service.rs"),
-    ("macros", "src/route.rs"),
-    ("di", "src/container.rs"),
-    ("di", "src/inject.rs"),
-    ("http", "src/result.rs"),
-    ("http", "src/server.rs"),
-    ("router", "src/path.rs"),
-    ("testing", "src/lib.rs"),
+    ("core", "src/core/module.rs"),
+    ("core", "src/core/app.rs"),
+    ("macros", "macros/src/lib.rs"),
+    ("macros", "macros/src/module.rs"),
+    ("di", "src/di/container.rs"),
+    ("di", "src/di/inject.rs"),
+    ("http", "src/http/result.rs"),
+    ("http", "src/http/server.rs"),
+    ("router", "src/router/path.rs"),
+    ("testing", "src/testing/mod.rs"),
     ("root", "src/lib.rs"),
     ("root", "src/bootstrap.rs"),
 ];
 
 #[test]
-fn workspace_lists_all_internal_crates() {
+fn ruest_internal_modules_exist() {
     let rf = ruest_dir();
-    for name in EXPECTED_CRATES {
-        let crate_dir = rf.join(name);
-        assert_dir_exists(&crate_dir);
-        assert_file_exists(crate_dir.join("Cargo.toml"));
-        let lib_rs = crate_dir.join("src/lib.rs");
-        let main_rs = crate_dir.join("src/main.rs");
-        assert!(
-            lib_rs.is_file() || main_rs.is_file(),
-            "crate {} doit avoir src/lib.rs ou src/main.rs",
-            name
-        );
+    for name in RUEST_INTERNAL_MODULES {
+        assert_dir_exists(rf.join("src").join(name));
+        assert_file_exists(rf.join("src").join(name).join("mod.rs"));
+    }
+}
+
+#[test]
+fn published_crates_exist() {
+    let root = workspace_root();
+    for (_name, rel) in PUBLISHED_CRATES {
+        assert_file_exists(root.join(rel));
     }
 }
 
 #[test]
 fn key_source_files_exist() {
     let rf = ruest_dir();
-    for (crate_name, rel) in KEY_FILES {
-        let path = if *crate_name == "root" {
+    for (area, rel) in KEY_FILES {
+        let path = if *area == "macros" {
             rf.join(rel)
         } else {
-            rf.join(crate_name).join(rel)
+            rf.join(rel)
         };
         assert_file_exists(path);
     }
 }
 
 #[test]
-fn ruestdb_crates_exist() {
+fn ruestdb_crate_exists() {
     let root = workspace_root();
-    for name in RUESTDB_CRATES {
-        let dir = root.join("ruest-db").join(name);
-        assert_dir_exists(&dir);
-        assert_file_exists(dir.join("Cargo.toml"));
-    }
+    assert_dir_exists(root.join("ruest-db"));
+    assert_file_exists(root.join("ruest-db/Cargo.toml"));
+    assert_file_exists(root.join("ruest-db/src/lib.rs"));
 }
 
 #[test]

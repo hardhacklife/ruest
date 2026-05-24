@@ -21,4 +21,4 @@ path = "src/main.rs"
 clap.workspace = true
 anyhow.workspace = true
 tokio.workspace = true
-ruest-db-migrate.workspace = true
+ruest-db.workspace = true

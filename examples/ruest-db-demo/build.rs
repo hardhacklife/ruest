@@ -5,6 +5,6 @@ fn main() {
     println!("cargo:rerun-if-changed=schema.ruest");
 
     if root.join("schema.ruest").exists() {
-        ruest_db_migrate::generate_client(&root).expect("RuestDB generate");
+        ruest_db::generate_client(&root).expect("RuestDB generate");
     }
 }

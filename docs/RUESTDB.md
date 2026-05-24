@@ -1,16 +1,30 @@
 # RuestDB — base de données type Prisma pour RUEST
 
+Un seul package : **`cargo add ruest-db`**
+
 Voir [BRD&PRD_PRISMA.md](../BRD&PRD_PRISMA.md) pour la vision complète.
 
-## MVP livré
+## Contenu du crate `ruest-db`
 
-| Composant | Crate | Rôle |
-|-----------|-------|------|
-| AST | `ruest-db-schema` | Modèles, champs, attributs |
-| Parser | `ruest-db-parser` | Lit `schema.ruest` |
-| Codegen | `ruest-db-codegen` | SQL PostgreSQL + client Rust |
-| Runtime | `ruest-db-runtime` | Pool SQLx async |
-| Migrations | `ruest-db-migrate` | `ruestdb/migrations/` + table `_ruestdb_migrations` |
+| Module | Rôle |
+|--------|------|
+| `schema` | AST — modèles, champs, attributs |
+| `parser` | Lit `schema.ruest` |
+| `codegen` | SQL PostgreSQL + client Rust généré |
+| `runtime` | Pool SQLx async (`RuestDb`) |
+| `migrate` | `ruestdb/migrations/` + CLI helpers |
+
+## Installation
+
+```bash
+cargo add ruest-db
+```
+
+Dans le code généré (`generated/ruestdb/`), les imports pointent vers `ruest_db` :
+
+```rust
+use ruest_db::{RuestDb, RuestDbError, Row};
+```
 
 ## Schema (`schema.ruest`)
 
@@ -33,7 +47,7 @@ model Post {
 Types : `String`, `Int`, `Float`, `Boolean`, `DateTime`, `UUID`  
 Attributs : `@id`, `@unique`, `@default(uuid())`, `@default(now())`, `@relation(...)`
 
-## CLI
+## CLI (`ruest`)
 
 ```bash
 ruest db init              # schema.ruest + ruestdb/migrations/
@@ -50,17 +64,21 @@ ruest migrate reset        # drop + réapplique (dev)
 DATABASE_URL=postgres://user:password@localhost:5432/app
 ```
 
-## Utilisation dans le code
+## Utilisation
 
 ```rust
+use ruest_db::RuestDb;
+
 let db = RuestDb::connect_from_env().await?;
 let client = RuestDbClient::new(db);
 
 let users = client.user.find_many().await?;
-let one = client.user.find_unique(id).await?;
-let created = client.user.create(CreateUser { email, name }).await?;
-client.user.update(id, UpdateUser { name: Some("x".into()), ..Default::default() }).await?;
-client.user.delete(id).await?;
+```
+
+API migrate / generate depuis Rust :
+
+```rust
+use ruest_db::{db_init, generate_client, parse_schema};
 ```
 
 ## Exemple
@@ -77,10 +95,4 @@ cargo run -p ruest-db-demo
 
 ## Intégration RUEST
 
-Les repositories manuels (`*_repository.rs`) peuvent être remplacés progressivement par le client généré. Le module `AuthModule` / JWT reste indépendant.
-
-## Roadmap (hors MVP)
-
-- `ruest db pull` (introspection)
-- Guards sur `#[get(..., guards = ...)]`
-- MongoDB, GraphQL, dashboard
+Les repositories manuels peuvent être remplacés progressivement par le client généré. JWT / guards restent dans `ruest` + `ruest-security`.

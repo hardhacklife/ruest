@@ -1,8 +1,8 @@
 //! Bootstrap HTTP : assemble le routeur Axum au compile-time via `Module::wire_routes`.
 
-use ruest_core::{bootstrap, CoreError, Module, RuestApplication};
-use ruest_http::axum::Router;
-use ruest_security::{apply_jwt_layer, JwtService, SecurityConfig};
+use crate::core::{bootstrap, CoreError, Module, RuestApplication};
+use crate::http::axum::Router;
+use crate::security::{apply_jwt_layer, JwtService, SecurityConfig};
 
 /// Application prête à écouter (DI + routeur Axum monomorphisé).
 pub struct AppBuilder {
@@ -27,8 +27,8 @@ where
 pub trait ModuleWireRoutes {
     fn wire_routes(
         router: Router,
-        container: &ruest_di::Container,
-    ) -> Result<Router, ruest_di::DiError>;
+        container: &crate::di::Container,
+    ) -> Result<Router, crate::di::DiError>;
 }
 
 impl AppBuilder {
@@ -43,7 +43,7 @@ impl AppBuilder {
     }
 
     pub async fn listen(self) -> Result<(), CoreError> {
-        ruest_http::serve(self.app, self.router)
+        crate::http::serve(self.app, self.router)
             .await
             .map_err(|e| CoreError::Bootstrap(e.to_string()))
     }
@@ -58,7 +58,7 @@ impl AppBuilder {
     /// `register_jwt_provider` dans un `#[module]` si des contrôleurs l'injectent au câblage des routes.
     pub fn with_jwt_auth(mut self, config: SecurityConfig) -> Result<Self, CoreError> {
         if self.app.container.get::<JwtService>().is_err() {
-            ruest_security::register_jwt_provider(&self.app.container, config.clone())
+            crate::security::register_jwt_provider(&self.app.container, config.clone())
                 .map_err(|e| CoreError::ModuleConfig(e.to_string()))?;
         }
 
